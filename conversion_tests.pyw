@@ -160,7 +160,15 @@ class Window(QtGui.QMainWindow):
         else:
             event.ignore()
         
-    def conversion(self):       
+    def conversion(self):
+
+        #while True:
+        try:
+            n = int(number)
+        except ValueError:  #Если введено не целое число
+            self.label7.setText('<font color = red>Невозможно начать конвертирование. Неверно задан номер вопроса.<\\font>')
+            return None
+        
         try:
             n = int(number)
             if len(list_tests) > 0:
@@ -233,11 +241,10 @@ class Window(QtGui.QMainWindow):
             if reply == QtGui.QMessageBox.No:
                 self.label8.setText('Файлы с тестами в формате ЦДО сохранены в папке с исходными тестами.')
                 
-        except ValueError:  #Если введено не целое число
-            self.label7.setText('<font color = red>Невозможно начать конвертирование. Неверно задан номер вопроса.<\\font>')
         except NameError:
             self.label7.setText('<font color = red>Невозможно начать конвертирование. Не выбрано ни одного файла с тестом.<\\font>')
-            
+        except UnicodeDecodeError:
+            self.label7.setText('<font color = red>Невозможно начать конвертирование. Исходные тесты должны быть в кодировке ANSI<\\font>')
  
 app = QtGui.QApplication(sys.argv)
 qb = Window()
