@@ -245,7 +245,7 @@ class Window(QtGui.QMainWindow):
             self.label7.setText('<font color = red>Невозможно начать конвертирование. Не выбрано ни одного файла с тестом.<\\font>')
         except UnicodeDecodeError:
             self.label7.setText('<font color = red>Невозможно начать конвертирование. Исходные тесты должны быть в кодировке ANSI<\\font>')
- 
+
 app = QtGui.QApplication(sys.argv)
 qb = Window()
 qb.show()
