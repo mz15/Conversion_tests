@@ -47,5 +47,4 @@ for line in test1:
         else:
             print('$?', answer.strip())
 test1.close
-
 input()
