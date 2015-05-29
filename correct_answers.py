@@ -16,4 +16,5 @@ for line in test1:
         list_correct_answer.append(correct_answer)
 
 print('Правильные ответы на тест: ', list_correct_answer)
+
 input()
