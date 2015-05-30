@@ -59,7 +59,6 @@ class Window(QtGui.QMainWindow):
         self.button1.setFocusPolicy(QtCore.Qt.NoFocus)
         self.button1.setStatusTip('Выбор файлов с тестами в исходном формате')
         self.connect(self.button1, QtCore.SIGNAL('clicked()'), self.selectFiles)
-        #self.setFocus()
 
         self.button2 = QtGui.QPushButton('Ввести номер первого вопроса', self)
         self.button2.setFont(fntMyFont2)
@@ -88,7 +87,6 @@ class Window(QtGui.QMainWindow):
         #self.label2.adjustSize()
         #self.label2.setScaledContents(True)
 
-        
         self.label2.setText('не задана')
 
         self.label3 = QtGui.QLabel(self)
@@ -117,7 +115,6 @@ class Window(QtGui.QMainWindow):
         self.label8.setGeometry(20, 125, 700, 30)
         self.label8.setFont(fntMyFont2)
  
-        
     def selectFiles(self):
         global list_tests
         list_tests = QtGui.QFileDialog.getOpenFileNames(self, 'Выбрать файлы', '', '*.txt')
@@ -155,14 +152,10 @@ class Window(QtGui.QMainWindow):
             self.trUtf8("Вы уверены что хотите выйти?"),
                 QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
 
-        if reply == QtGui.QMessageBox.Yes:
-            event.accept()
-        else:
-            event.ignore()
+        event.accept() if reply == QtGui.QMessageBox.Yes else event.ignore()
         
     def conversion(self):
 
-        #while True:
         try:
             n = int(number)
         except ValueError:  #Если введено не целое число
@@ -170,7 +163,6 @@ class Window(QtGui.QMainWindow):
             return None
         
         try:
-            n = int(number)
             if len(list_tests) > 0:
                 reply = QtGui.QMessageBox.question(self, 'Конвертирование',
                     'Для конвертирования тестов в один файл нажмите "Yes", в отдельные - "No"',
@@ -180,18 +172,22 @@ class Window(QtGui.QMainWindow):
             for element in list_tests:
 
                 current_test = list_tests[i]
-                #if current_test.endswith('.txt'):
 
                 if current_test.endswith('(ЦДО).txt'):
                     i += 1
                     continue
       
                 test1 = open(current_test, 'r')
-                list_correct_answer = []    #Список правильных ответов
-                for line in test1:
-                    if line.startswith('%*Верный'): #Если строка с номером правильного ответа
-                        correct_answer = line[16:-4].strip() #Номер правильного ответа
-                        list_correct_answer.append(correct_answer) #Добавления элемента в список правильных ответов
+
+                list_correct_answer = ()    #Кортеж правильных ответов
+
+#                for line in test1:
+#                    if line.startswith('%*Верный'): #Если строка с номером правильного ответа
+#                        correct_answer = line[16:-4].strip() #Номер правильного ответа
+#                        list_correct_answer.append(correct_answer) #Добавления элемента в список правильных ответов
+
+                list_correct_answer += tuple(line[16:-4].strip() for line in test1 if line.startswith('%*Верный'))
+
                 test1.close()
 
                 test1 = open(current_test, 'r')
@@ -223,10 +219,7 @@ class Window(QtGui.QMainWindow):
                     if line.startswith('%*Ответ'):  #Если вариант ответа
                         b += 1      #Увеличиваем кол-во вариантов ответа
                         answer = line[11:-3].strip()
-                        if b == int(correct):   #Если ответ правильный
-                            test2.write('$!' + answer + '\n')
-                        else:
-                            test2.write('$?' + answer + '\n')
+                        test2.write('$!' + answer + '\n') if b == int(correct) else test2.write('$?' + answer + '\n')
                 test2.close()
                 test1.close()
                 
@@ -245,7 +238,7 @@ class Window(QtGui.QMainWindow):
             self.label7.setText('<font color = red>Невозможно начать конвертирование. Не выбрано ни одного файла с тестом.<\\font>')
         except UnicodeDecodeError:
             self.label7.setText('<font color = red>Невозможно начать конвертирование. Исходные тесты должны быть в кодировке ANSI<\\font>')
-
+ 
 app = QtGui.QApplication(sys.argv)
 qb = Window()
 qb.show()
