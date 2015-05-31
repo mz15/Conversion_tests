@@ -140,7 +140,7 @@ class Window(QtGui.QMainWindow):
                 self.label4.setText(number)
                 self.label7.setText('')
                 self.label8.setText('')
-        except ValueError:  # Если введено не целое число
+        except ValueError:  # If you have entered is not an integer
             if ok:
                 self.label4.setText('<font color = red>Ошибка ввода! Должно быть введено целое число!<\\font>')
                 self.label7.setText('')      
@@ -151,7 +151,7 @@ class Window(QtGui.QMainWindow):
                 self.label7.setText('')
                 self.label8.setText('')
 
-    def closeEvent(self, event):  # Подтверждение выхода
+    def closeEvent(self, event):  # Confirmation of exit
         reply = QtGui.QMessageBox.question(self, self.trUtf8('Закрытие программы'),
             self.trUtf8("Вы уверены что хотите выйти?"), QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
 
@@ -161,7 +161,7 @@ class Window(QtGui.QMainWindow):
 
         try:
             n = int(number)
-        except ValueError:  # Если введено не целое число
+        except ValueError:  # If you have entered is not an integer
             self.label7.setText('<font color = red>Невозможно начать конвертирование. '
                                 'Неверно задан номер вопроса.<\\font>')
             return None
@@ -177,7 +177,7 @@ class Window(QtGui.QMainWindow):
                                                    QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
             
             i = 0
-            for i in list_tests:
+            for element in list_tests:
 
                 current_test = list_tests[i]
 
@@ -187,12 +187,12 @@ class Window(QtGui.QMainWindow):
       
                 test1 = open(current_test, 'r')
 
-                list_correct_answer = ()  # Кортеж правильных ответов
+                list_correct_answer = ()  # Tuple of correct answers
 
 #                for line in test1:
-#                    if line.startswith('%*Верный'):  # Если строка с номером правильного ответа
-#                        correct_answer = line[16:-4].strip()  # Номер правильного ответа
-#                        list_correct_answer.append(correct_answer)  # Добавления элемента в список правильных ответов
+#                    if line.startswith('%*Верный'):  # If the string contains the number of the correct answer
+#                        correct_answer = line[16:-4].strip()
+#                        list_correct_answer.append(correct_answer)
 
                 list_correct_answer += tuple(line[16:-4].strip() for line in test1 if line.startswith('%*Верный'))
 
@@ -213,20 +213,20 @@ class Window(QtGui.QMainWindow):
                     x = 0
                     for line in test1:
                         
-                        if line.startswith('%*--'):  # Если строка с номером вопроса
+                        if line.startswith('%*--'):  # If the string contains the question number
                             test2.write('\n' + '#L' + str(n) + ' W4' + '\n')
-                            correct = list_correct_answer[x]  # Номер правильного ответа на этот вопрос
-                            b = 0  # Сброс кол-ва вариантов ответов
-                            n += 1  # Номер следующего вопроса
-                            x += 1  # Номер элемента списка - правильный ответ на след. вопрос
+                            correct = list_correct_answer[x]  # Number of correct answers to the current question
+                            b = 0  # Reset the number of options
+                            n += 1  # Number next question
+                            x += 1  # Element number tuple - correct answer to the following question
 
                         start = line[0]
-                        if start.isalpha() or start.isdigit():  # Если строка начинается с буквы или цифры
+                        if start.isalpha() or start.isdigit():  # If the string contains a question
                             question = line[0:-3].strip()
                             test2.write(question + '\n')
                      
-                        if line.startswith('%*Ответ'):  # Если вариант ответа
-                            b += 1  # Увеличиваем кол-во вариантов ответа
+                        if line.startswith('%*Ответ'):  # If the string contains answer
+                            b += 1  # Increases the number of options
                             answer = line[11:-3].strip()
                             right_answer = '$!' + answer + '\n'
                             wrong_answer = '$?' + answer + '\n'
