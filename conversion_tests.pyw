@@ -1,6 +1,14 @@
 import sys
 from PyQt4 import QtGui, QtCore
 
+class NegativeError(Exception):
+    def __init__(self, text):
+        NegativeError.text = text
+
+class ZeroError(Exception):
+    def __init__(self, text):
+        ZeroError.text = text
+
 class Window(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
@@ -93,7 +101,7 @@ class Window(QtGui.QMainWindow):
         self.label3.setText('№ первого вопроса:')
 
         self.label4 = QtGui.QLabel(self)
-        self.label4.setGeometry(160, 80, 300, 30)
+        self.label4.setGeometry(160, 80, 500, 30)
         self.label4.setFont(font2)
         self.label4.setText('не задан')        
 
@@ -132,7 +140,7 @@ class Window(QtGui.QMainWindow):
         global number
         number, ok = QtGui.QInputDialog.getText(self, 'Номер первого вопроса',
                                                 'Введите номер, который будет присвоен первому вопросу теста:')
-        
+
         try:
             global n
             n = int(number)
@@ -140,14 +148,24 @@ class Window(QtGui.QMainWindow):
                 self.label4.setText(number)
                 self.label7.setText('')
                 self.label8.setText('')
+            if n < 0:
+                raise NegativeError('Ошибка. Нумерация вопросов не может начинаться с отрицательного числа.')
+            if n == 0:
+                raise ZeroError('Ошибка. Нумерация вопросов не может начинаться с нуля.')
         except ValueError:  # If you have entered is not an integer
             if ok:
-                self.label4.setText('<font color = red>Ошибка ввода! Должно быть введено целое число!<\\font>')
+                self.label4.setText('<font color = red>Ошибка. '
+                                    'Номером вопроса может быть только целое положительное число.<\\font>')
                 self.label7.setText('')      
                 self.label8.setText('')
-        except NameError:
+        except NegativeError:
             if ok:
-                self.label4.setText('<font color = red>Ошибка ввода! Должно быть введено целое число!<\\font>')
+                self.label4.setText('<font color = red>' + NegativeError.text + '<\\font>')
+                self.label7.setText('')
+                self.label8.setText('')
+        except ZeroError:
+            if ok:
+                self.label4.setText('<font color = red>' + ZeroError.text + '<\\font>')
                 self.label7.setText('')
                 self.label8.setText('')
 
@@ -160,14 +178,22 @@ class Window(QtGui.QMainWindow):
     def conversion(self):
 
         try:
+            global n
             n = int(number)
+
+            if n < 0:
+                raise NegativeError('Невозможно начать конвертирование. Неверно задан номер вопроса.')
+            if n == 0:
+                raise ZeroError('Невозможно начать конвертирование. Неверно задан номер вопроса.')
         except ValueError:  # If you have entered is not an integer
             self.label7.setText('<font color = red>Невозможно начать конвертирование. '
-                                'Неверно задан номер вопроса.<\\font>')
+                                    'Неверно задан номер вопроса.<\\font>')
             return None
-        except NameError:
-            self.label7.setText('<font color = red>Невозможно начать конвертирование. '
-                                'Неверно задан номер вопроса.<\\font>')
+        except NegativeError:
+            self.label7.setText('<font color = red>' + NegativeError.text + '<\\font>')
+            return None
+        except ZeroError:
+            self.label7.setText('<font color = red>' + ZeroError.text + '<\\font>')
             return None
 
         try:
@@ -251,7 +277,7 @@ class Window(QtGui.QMainWindow):
         except UnicodeDecodeError:
             self.label7.setText('<font color = red>Невозможно начать конвертирование. '
                                 'Исходные тесты должны быть в кодировке ANSI<\\font>')
- 
+
 app = QtGui.QApplication(sys.argv)
 qb = Window()
 qb.show()
