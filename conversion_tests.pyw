@@ -1,5 +1,4 @@
 import sys
-import os
 from PyQt4 import QtGui, QtCore
 
 class Window(QtGui.QMainWindow):
@@ -152,7 +151,7 @@ class Window(QtGui.QMainWindow):
                 self.label7.setText('')
                 self.label8.setText('')
 
-    def close_event(self, event):  # Подтверждение выхода
+    def closeEvent(self, event):  # Подтверждение выхода
         reply = QtGui.QMessageBox.question(self, self.trUtf8('Закрытие программы'),
             self.trUtf8("Вы уверены что хотите выйти?"), QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
 
