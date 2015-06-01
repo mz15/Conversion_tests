@@ -86,13 +86,13 @@ class Window(QtGui.QMainWindow):
         self.label1.setText('Папка с тестами:')
 
         self.label2 = QtGui.QLabel(self)
-        self.label2.setGeometry(135, 65, 600, 30)
-        self.label2.setFont(font2)
-#        self.label2.resize(self.label2.sizeHint())
+        self.label2.setGeometry(135, 65, 1300, 30)
 #        self.label2.move(135, 65)
+        self.label2.setFont(font2)
+        self.label2.setText('не задана')
 #        self.label2.adjustSize()
+#        self.label2.resize(self.label2.sizeHint())
 #        self.label2.setScaledContents(True)
-        self.label2.setText('не заданаqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq')
 
         self.label3 = QtGui.QLabel(self)
         self.label3.setGeometry(20, 80, 130, 30)
@@ -121,22 +121,21 @@ class Window(QtGui.QMainWindow):
         self.label8.setFont(font2)
 
     def center(self):
-            """ We get the display resolution, we get the size of the window,
-                                                                            move window to the center of the screen."""
+
+            """ We get the display resolution, get the size of the window, move window to the center of the screen. """
 
             screen = QtGui.QDesktopWidget().screenGeometry()
             size = self.geometry()
             self.move((screen.width()-size.width())//2, (screen.height()-size.height())//2)
 
     def select_files(self):
+
         """ File selection tests.
 
-
-        Performed multi-select text files (.txt) with questions for the test.
+        Performs multi-select text files (.txt) with questions for the test.
         If you select at least one file:
             From the path to one of the selected files are retrieved path to a test that is displayed.
             Also displays the number of selected files.
-
 
         """
 
@@ -155,7 +154,16 @@ class Window(QtGui.QMainWindow):
             self.label8.setText('')
 
     def input_number(self):
+
         """ Enter the number of the first question.
+
+        InputDialog opens to enter the number (positive integer) from which to start numbering of converted questions.
+        Displays the number entered or an error message. If error occurs, a window opens with an error message.
+
+        Exceptions:
+            ValueError - if you have entered is not an integer.
+            NegativeError - if you enter a negative integer.
+            ZeroError - if you enter zero.
 
         """
 
@@ -175,7 +183,7 @@ class Window(QtGui.QMainWindow):
                 self.label4.setText(number)
                 self.label7.setText('')
                 self.label8.setText('')
-        except ValueError:  # If you have entered is not an integer
+        except ValueError:
             if ok:
                 error_id = 1
                 self.label4.setText('<font color = red>Ошибка. '
@@ -199,6 +207,9 @@ class Window(QtGui.QMainWindow):
             self.error_window()
 
     def closeEvent(self, event):  # Confirmation of exit
+
+        """ Message Box opens to confirm the exit from the program. """
+
         reply = QtGui.QMessageBox.question(self, self.trUtf8('Закрытие программы'),
                                            self.trUtf8("Вы уверены что хотите выйти?"),
                                            QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
@@ -206,6 +217,26 @@ class Window(QtGui.QMainWindow):
         event.accept() if reply == QtGui.QMessageBox.Yes else event.ignore()
 
     def conversion(self):
+
+        """ Conversion testing.
+
+        Opens the MessageBox to select options for saving of converted tests: a single file or separate.
+        In the cycle:
+            Open original tests, generated tuple correct answers, tests are closed.
+            Open original tests, open for writing text files (using the context manager).
+            Original tests are read line by line. Transformed questions are written to a file. Files closed.
+            If error occurs, a window opens with an error message.
+            If the conversion is completed, a window opens with an error message.
+
+        Exceptions:
+            ValueError - if you have entered is not an integer.
+            NegativeError - if you enter a negative integer.
+            ZeroError - if you enter zero.
+            NameError - if no number is entered first question or if not selected any test.
+            UnicodeDecodeError - if the wrong encoding original file.
+
+        """
+
         global error_id, success_id, n
         error_id = None
         success_id = None
@@ -344,11 +375,17 @@ class Window(QtGui.QMainWindow):
             self.success_window()
 
     def error_window(self):
+
+        """ It displays a message box with an error message. """
+
         em = ErrorMessage(error_id)
         em.show()
         em.exec_()
 
     def success_window(self):
+
+        """ It displays a message box on the completion of the conversion. """
+
         sm = SuccessMessage(success_id)
         sm.show()
         sm.exec_()
