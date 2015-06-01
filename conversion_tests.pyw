@@ -1,14 +1,6 @@
 import sys
 from PyQt4 import QtGui, QtCore
 
-class NegativeError(Exception):
-    def __init__(self, text):
-        NegativeError.text = text
-
-class ZeroError(Exception):
-    def __init__(self, text):
-        ZeroError.text = text
-
 class Window(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
@@ -25,10 +17,10 @@ class Window(QtGui.QMainWindow):
 #        self.statusBar().showMessage('Ready')
 #        self.setFocus()
 
-        exit_prog = QtGui.QAction(QtGui.QIcon('open.png'), 'Закрыть программу', self)
-        exit_prog.setShortcut('Ctrl+Q')
-        exit_prog.setStatusTip('Выход из программы')
-        self.connect(exit_prog, QtCore.SIGNAL('triggered()'), exit)
+        exit_program = QtGui.QAction(QtGui.QIcon('open.png'), 'Закрыть программу', self)
+        exit_program.setShortcut('Ctrl+Q')
+        exit_program.setStatusTip('Выход из программы')
+        self.connect(exit_program, QtCore.SIGNAL('triggered()'), exit)
 
         select_folder = QtGui.QAction(QtGui.QIcon('open.png'), 'Выбрать файлы с тестами', self)
         select_folder.setShortcut('Ctrl+O')
@@ -47,7 +39,7 @@ class Window(QtGui.QMainWindow):
 
         menu = self.menuBar()
         button1 = menu.addMenu('&Файл')
-        button1.addAction(exit_prog)
+        button1.addAction(exit_program)
 
         button2 = menu.addMenu('&Конвертирование')
         button2.addAction(select_folder)
@@ -223,29 +215,42 @@ class Window(QtGui.QMainWindow):
                 raise NegativeError('Невозможно начать конвертирование. Неверно задан номер вопроса.')
             if n == 0:
                 raise ZeroError('Невозможно начать конвертирование. Неверно задан номер вопроса.')
+
         except ValueError:  # If you have entered is not an integer
             error_id = 1
             self.label7.setText('<font color = red>Невозможно начать конвертирование. '
                                 'Неверно задан номер вопроса.<\\font>')
+
             if error_id is not None:  # If an error occurs, a message box opens
                 self.error_window()
+
             return None
+
         except NegativeError:
             error_id = 1
             self.label7.setText('<font color = red>' + NegativeError.text + '<\\font>')
+
             if error_id is not None:  # If an error occurs, a message box opens
                 self.error_window()
+
             return None
+
         except ZeroError:
             error_id = 1
             self.label7.setText('<font color = red>' + ZeroError.text + '<\\font>')
+
             if error_id is not None:  # If an error occurs, a message box opens
                 self.error_window()
+
             return None
+
         except NameError:
-            error_id = 0
+            error_id = 1
             self.label7.setText('<font color = red>Невозможно начать конвертирование. '
-                                'Не выбрано ни одного файла с тестом.<\\font>')
+                                'Не задан номер первого вопроса.<\\font>')
+            if error_id is not None:  # If an error occurs, a message box opens
+                self.error_window()
+
             return None
 
         try:
@@ -313,8 +318,6 @@ class Window(QtGui.QMainWindow):
                 test1.close()
                 
                 i += 1
-            else:
-                i += 1
 
             success_id = 0
             self.label7.setText("<font color = green>Конвертирование завершено!<\\font>")
@@ -362,6 +365,7 @@ class ErrorMessage(QtGui.QMessageBox):
     def __init__(self, error_id):
         QtGui.QMessageBox.__init__(self)
         self.setWindowTitle('Ошибка')
+        self.setWindowIcon(QtGui.QIcon('icon.png'))
         self.setIcon(QtGui.QMessageBox.Warning)
         self.addButton('ОК', QtGui.QMessageBox.AcceptRole)
 
@@ -371,6 +375,14 @@ class ErrorMessage(QtGui.QMessageBox):
             self.setText(u"Неверно введен номер первого вопроса")
         elif error_id == 2:
             self.setText(u"Неверная кодировка исходного теста")
+
+class NegativeError(Exception):
+    def __init__(self, text):
+        NegativeError.text = text
+
+class ZeroError(Exception):
+    def __init__(self, text):
+        ZeroError.text = text
 
 app = QtGui.QApplication(sys.argv)
 qb = Window()
