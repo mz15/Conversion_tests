@@ -119,9 +119,6 @@ class Window(QtGui.QMainWindow):
         self.label8.setGeometry(20, 125, 700, 30)
         self.label8.setFont(font2)
 
-        self.timer = QtCore.QBasicTimer()
-        self.step = 0
-
     def center(self):
             """We get the display resolution, we get the size of the window, move window to the center of the screen."""
 
