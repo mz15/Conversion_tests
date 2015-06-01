@@ -12,12 +12,18 @@ class ZeroError(Exception):
 class Window(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
-        self.setGeometry(100, 100, 1000, 175)
+#        self.setGeometry(100, 100, 1000, 175)
+        self.setWindowIcon(QtGui.QIcon('icon.png'))
         self.setWindowTitle(self.trUtf8('Конвертирование тестов в формат ЦДО'))
 #        self.textEdit = QtGui.QTextEdit()
 #        self.setCentralWidget(self.textEdit)
+        self.resize(1000, 175)
+        self.setMinimumSize(1000, 175)
+#        self.setMaximumSize(1000, 175)
+        self.center()
         self.statusBar()
-        self.setFocus()
+#        self.statusBar().showMessage('Ready')
+#        self.setFocus()
 
         exit_prog = QtGui.QAction(QtGui.QIcon('open.png'), 'Закрыть программу', self)
         exit_prog.setShortcut('Ctrl+Q')
@@ -120,8 +126,29 @@ class Window(QtGui.QMainWindow):
         self.label8 = QtGui.QLabel(self)
         self.label8.setGeometry(20, 125, 700, 30)
         self.label8.setFont(font2)
- 
+
+        self.timer = QtCore.QBasicTimer()
+        self.step = 0
+
+    def center(self):
+            """We get the display resolution, we get the size of the window, move window to the center of the screen."""
+
+            screen = QtGui.QDesktopWidget().screenGeometry()
+            size = self.geometry()
+            self.move((screen.width()-size.width())//2, (screen.height()-size.height())//2)
+
     def select_files(self):
+        """File selection tests.
+
+
+        Performed multi-select text files (.txt) with questions for the test.
+        If you select at least one file:
+            From the path to one of the selected files are retrieved path to a test that is displayed.
+            Also displays the number of selected files.
+
+
+        """
+
         global list_tests
         list_tests = QtGui.QFileDialog.getOpenFileNames(self, 'Выбрать файлы', '', '*.txt')
 
@@ -137,48 +164,59 @@ class Window(QtGui.QMainWindow):
             self.label8.setText('')
 
     def input_number(self):
-        global number
+
+        global number, n, error_id
+        error_id = None
+
         number, ok = QtGui.QInputDialog.getText(self, 'Номер первого вопроса',
                                                 'Введите номер, который будет присвоен первому вопросу теста:')
 
         try:
-            global n
-            n = int(number)
             if ok:
+                n = int(number)
+                if n < 0:
+                    raise NegativeError('Ошибка. Нумерация вопросов не может начинаться с отрицательного числа.')
+                if n == 0:
+                    raise ZeroError('Ошибка. Нумерация вопросов не может начинаться с нуля.')
                 self.label4.setText(number)
                 self.label7.setText('')
                 self.label8.setText('')
-            if n < 0:
-                raise NegativeError('Ошибка. Нумерация вопросов не может начинаться с отрицательного числа.')
-            if n == 0:
-                raise ZeroError('Ошибка. Нумерация вопросов не может начинаться с нуля.')
         except ValueError:  # If you have entered is not an integer
             if ok:
+                error_id = 1
                 self.label4.setText('<font color = red>Ошибка. '
                                     'Номером вопроса может быть только целое положительное число.<\\font>')
                 self.label7.setText('')      
                 self.label8.setText('')
         except NegativeError:
             if ok:
+                error_id = 1
                 self.label4.setText('<font color = red>' + NegativeError.text + '<\\font>')
                 self.label7.setText('')
                 self.label8.setText('')
         except ZeroError:
             if ok:
+                error_id = 1
                 self.label4.setText('<font color = red>' + ZeroError.text + '<\\font>')
                 self.label7.setText('')
                 self.label8.setText('')
 
+        if error_id is not None:  # If an error occurs, a message box opens
+            self.error_window()
+
     def closeEvent(self, event):  # Confirmation of exit
         reply = QtGui.QMessageBox.question(self, self.trUtf8('Закрытие программы'),
-            self.trUtf8("Вы уверены что хотите выйти?"), QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
+                                           self.trUtf8("Вы уверены что хотите выйти?"),
+                                           QtGui.QMessageBox.Yes, QtGui.QMessageBox.No)
 
         event.accept() if reply == QtGui.QMessageBox.Yes else event.ignore()
 
     def conversion(self):
+        global error_id, success_id, n
+        error_id = None
+        success_id = None
 
         try:
-            global n
             n = int(number)
 
             if n < 0:
@@ -186,14 +224,28 @@ class Window(QtGui.QMainWindow):
             if n == 0:
                 raise ZeroError('Невозможно начать конвертирование. Неверно задан номер вопроса.')
         except ValueError:  # If you have entered is not an integer
+            error_id = 1
             self.label7.setText('<font color = red>Невозможно начать конвертирование. '
-                                    'Неверно задан номер вопроса.<\\font>')
+                                'Неверно задан номер вопроса.<\\font>')
+            if error_id is not None:  # If an error occurs, a message box opens
+                self.error_window()
             return None
         except NegativeError:
+            error_id = 1
             self.label7.setText('<font color = red>' + NegativeError.text + '<\\font>')
+            if error_id is not None:  # If an error occurs, a message box opens
+                self.error_window()
             return None
         except ZeroError:
+            error_id = 1
             self.label7.setText('<font color = red>' + ZeroError.text + '<\\font>')
+            if error_id is not None:  # If an error occurs, a message box opens
+                self.error_window()
+            return None
+        except NameError:
+            error_id = 0
+            self.label7.setText('<font color = red>Невозможно начать конвертирование. '
+                                'Не выбрано ни одного файла с тестом.<\\font>')
             return None
 
         try:
@@ -263,20 +315,62 @@ class Window(QtGui.QMainWindow):
                 i += 1
             else:
                 i += 1
-            
+
+            success_id = 0
             self.label7.setText("<font color = green>Конвертирование завершено!<\\font>")
 
             if reply == QtGui.QMessageBox.Yes:
                 self.label8.setText('Файл "ЦДО.txt" с тестом в формате ЦДО сохранен в папке с исходными тестами.')
             if reply == QtGui.QMessageBox.No:
                 self.label8.setText('Файлы с тестами в формате ЦДО сохранены в папке с исходными тестами.')
-                
+
         except NameError:
+            error_id = 0
             self.label7.setText('<font color = red>Невозможно начать конвертирование. '
                                 'Не выбрано ни одного файла с тестом.<\\font>')
         except UnicodeDecodeError:
+            error_id = 2
             self.label7.setText('<font color = red>Невозможно начать конвертирование. '
                                 'Исходные тесты должны быть в кодировке ANSI<\\font>')
+
+        if error_id is not None:  # If an error occurs, a message box opens
+            self.error_window()
+        if success_id is not None:  # If the operation is successful, a message box opens
+            self.success_window()
+
+    def error_window(self):
+        em = ErrorMessage(error_id)
+        em.show()
+        em.exec_()
+
+    def success_window(self):
+        sm = SuccessMessage(success_id)
+        sm.show()
+        sm.exec_()
+
+class SuccessMessage(QtGui.QMessageBox):
+    def __init__(self, success_id):
+        QtGui.QMessageBox.__init__(self)
+        self.setWindowTitle('Успех')
+        self.setIcon(QtGui.QMessageBox.Information)
+        self.addButton('ОК', QtGui.QMessageBox.AcceptRole)
+
+        if success_id == 0:
+            self.setText(u"Конвертирование завершено")
+
+class ErrorMessage(QtGui.QMessageBox):
+    def __init__(self, error_id):
+        QtGui.QMessageBox.__init__(self)
+        self.setWindowTitle('Ошибка')
+        self.setIcon(QtGui.QMessageBox.Warning)
+        self.addButton('ОК', QtGui.QMessageBox.AcceptRole)
+
+        if error_id == 0:
+            self.setText(u"Не выбраны тесты")
+        elif error_id == 1:
+            self.setText(u"Неверно введен номер первого вопроса")
+        elif error_id == 2:
+            self.setText(u"Неверная кодировка исходного теста")
 
 app = QtGui.QApplication(sys.argv)
 qb = Window()
