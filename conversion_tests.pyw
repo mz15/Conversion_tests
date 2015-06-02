@@ -122,11 +122,11 @@ class Window(QtGui.QMainWindow):
 
     def center(self):
 
-            """ We get the display resolution, get the size of the window, move window to the center of the screen. """
+        """ We get the display resolution, get the size of the window, move window to the center of the screen. """
 
-            screen = QtGui.QDesktopWidget().screenGeometry()
-            size = self.geometry()
-            self.move((screen.width()-size.width())//2, (screen.height()-size.height())//2)
+        screen = QtGui.QDesktopWidget().screenGeometry()
+        size = self.geometry()
+        self.move((screen.width()-size.width())//2, (screen.height()-size.height())//2)
 
     def select_files(self):
 
@@ -234,6 +234,9 @@ class Window(QtGui.QMainWindow):
             ZeroError - if you enter zero.
             NameError - if no number is entered first question or if not selected any test.
             UnicodeDecodeError - if the wrong encoding original file.
+
+        Problems: the exception is invoked only if the original file in UTF-8 encoding. In any other encoding
+        (except ANSI) during the conversion error will not occur, but the conversion will not work correctly.
 
         """
 
