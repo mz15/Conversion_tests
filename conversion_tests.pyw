@@ -79,6 +79,23 @@ class Window(QtGui.QMainWindow):
         self.button3.setFocusPolicy(QtCore.Qt.NoFocus)
         self.button3.setStatusTip('Запуск конвертирования тестов в формат ЦДО')
         self.connect(self.button3, QtCore.SIGNAL('clicked()'), self.conversion)
+# ----------------------------------------------------
+# хрень:
+        frame = QtGui.QFrame(self)  # Фрейм
+        frame.setFrameShape(QtGui.QFrame.StyledPanel)
+        frame.setFrameShadow(QtGui.QFrame.Raised)
+        frame.setGeometry(610, 35, 100, 200)
+        gridlay = QtGui.QGridLayout(frame)
+
+        radio_group = QtGui.QGroupBox(u"Выбор из двух", frame) # Рамка с надписью вокруг группы элементов.
+        radio_lay = QtGui.QVBoxLayout(radio_group)             # Менеджер размещения элементов в рамке.
+        radio1 = QtGui.QRadioButton(u"Первый", radio_group) # Два зависимых
+        radio2 = QtGui.QRadioButton(u"Второй", radio_group) # переключателя
+        radio1.setChecked(True)
+        radio_lay.addWidget(radio1)
+        radio_lay.addWidget(radio2)
+        gridlay.addWidget(radio_group, 0, 0, 0, 0)
+# -------------------------------------------------------------
 
         self.label1 = QtGui.QLabel(self)
         self.label1.setGeometry(20, 65, 105, 30)
@@ -122,11 +139,11 @@ class Window(QtGui.QMainWindow):
 
     def center(self):
 
-            """ We get the display resolution, get the size of the window, move window to the center of the screen. """
+        """ We get the display resolution, get the size of the window, move window to the center of the screen. """
 
-            screen = QtGui.QDesktopWidget().screenGeometry()
-            size = self.geometry()
-            self.move((screen.width()-size.width())//2, (screen.height()-size.height())//2)
+        screen = QtGui.QDesktopWidget().screenGeometry()
+        size = self.geometry()
+        self.move((screen.width()-size.width())//2, (screen.height()-size.height())//2)
 
     def select_files(self):
 
@@ -234,6 +251,9 @@ class Window(QtGui.QMainWindow):
             ZeroError - if you enter zero.
             NameError - if no number is entered first question or if not selected any test.
             UnicodeDecodeError - if the wrong encoding original file.
+
+        Problems: the exception is invoked only if the original file in UTF-8 encoding. In any other encoding
+        (except ANSI) during the conversion error will not occur, but the conversion will not work correctly.
 
         """
 
