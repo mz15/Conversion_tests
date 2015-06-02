@@ -10,9 +10,9 @@ class Window(QtGui.QMainWindow):
         self.resize(1000, 175)
         self.center()
         self.statusBar()
-        self.setMinimumSize(1000, 175)
-#        self.setMaximumSize(1000, 175)
-#        self.setGeometry(100, 100, 1000, 175)
+        self.setMinimumSize(1000, 205)
+#        self.setMaximumSize(1000, 205)
+#        self.setGeometry(100, 100, 1000, 205)
 #        self.statusBar().showMessage('Ready')
 #        self.setFocus()
 #        self.textEdit = QtGui.QTextEdit()
@@ -45,7 +45,7 @@ class Window(QtGui.QMainWindow):
         button2 = menu.addMenu('&Конвертирование')
         button2.addAction(select_folder)
         button2.addAction(input_number)
-        button2.addAction(convert) 
+        button2.addAction(convert)
 
         font1 = QtGui.QFont(self)
         font1.setBold(True)
@@ -68,14 +68,14 @@ class Window(QtGui.QMainWindow):
 
         self.button2 = QtGui.QPushButton('Ввести номер первого вопроса', self)
         self.button2.setFont(font2)
-        self.button2.setGeometry(200, 35, 200, 30)
+        self.button2.setGeometry(410, 35, 200, 30)
         self.button2.setFocusPolicy(QtCore.Qt.NoFocus)
         self.button2.setStatusTip('Ввод номера, который будет присвоен первому вопросу отконвертированного теста')
         self.connect(self.button2, QtCore.SIGNAL('clicked()'), self.input_number)
 
         self.button3 = QtGui.QPushButton('Отконвертировать тесты', self)
         self.button3.setFont(font2)
-        self.button3.setGeometry(410, 35, 200, 30)
+        self.button3.setGeometry(625, 35, 200, 30)
         self.button3.setFocusPolicy(QtCore.Qt.NoFocus)
         self.button3.setStatusTip('Запуск конвертирования тестов в формат ЦДО')
         self.connect(self.button3, QtCore.SIGNAL('clicked()'), self.conversion)
@@ -84,13 +84,16 @@ class Window(QtGui.QMainWindow):
         frame = QtGui.QFrame(self)  # Фрейм
         frame.setFrameShape(QtGui.QFrame.StyledPanel)
         frame.setFrameShadow(QtGui.QFrame.Raised)
-        frame.setGeometry(610, 35, 100, 200)
+        frame.setGeometry(200, 15, 200, 90)
         gridlay = QtGui.QGridLayout(frame)
 
-        radio_group = QtGui.QGroupBox(u"Выбор из двух", frame) # Рамка с надписью вокруг группы элементов.
+        radio_group = QtGui.QGroupBox(u"Отконвертировать тесты:", frame) # Рамка с надписью вокруг группы элементов.
         radio_lay = QtGui.QVBoxLayout(radio_group)             # Менеджер размещения элементов в рамке.
-        radio1 = QtGui.QRadioButton(u"Первый", radio_group) # Два зависимых
-        radio2 = QtGui.QRadioButton(u"Второй", radio_group) # переключателя
+
+        global radio1, radio2
+
+        radio1 = QtGui.QRadioButton(u"В один файл", radio_group) # Два зависимых
+        radio2 = QtGui.QRadioButton(u"В отдельные файлы", radio_group) # переключателя
         radio1.setChecked(True)
         radio_lay.addWidget(radio1)
         radio_lay.addWidget(radio2)
@@ -98,12 +101,12 @@ class Window(QtGui.QMainWindow):
 # -------------------------------------------------------------
 
         self.label1 = QtGui.QLabel(self)
-        self.label1.setGeometry(20, 65, 105, 30)
+        self.label1.setGeometry(20, 95, 105, 30)
         self.label1.setFont(font1)
         self.label1.setText('Папка с тестами:')
 
         self.label2 = QtGui.QLabel(self)
-        self.label2.setGeometry(135, 65, 1300, 30)
+        self.label2.setGeometry(135, 95, 1300, 30)
 #        self.label2.move(135, 65)
         self.label2.setFont(font2)
         self.label2.setText('не задана')
@@ -112,29 +115,29 @@ class Window(QtGui.QMainWindow):
 #        self.label2.setScaledContents(True)
 
         self.label3 = QtGui.QLabel(self)
-        self.label3.setGeometry(20, 80, 130, 30)
+        self.label3.setGeometry(20, 110, 130, 30)
         self.label3.setFont(font1)
         self.label3.setText('№ первого вопроса:')
 
         self.label4 = QtGui.QLabel(self)
-        self.label4.setGeometry(160, 80, 500, 30)
+        self.label4.setGeometry(160, 110, 500, 30)
         self.label4.setFont(font2)
-        self.label4.setText('не задан')        
+        self.label4.setText('не задан')
 
         self.label5 = QtGui.QLabel(self)
-        self.label5.setGeometry(20, 95, 130, 30)
+        self.label5.setGeometry(20, 125, 130, 30)
         self.label5.setFont(font1)
 
         self.label6 = QtGui.QLabel(self)
-        self.label6.setGeometry(160, 95, 700, 30)
+        self.label6.setGeometry(160, 125, 700, 30)
         self.label6.setFont(font2)
 
         self.label7 = QtGui.QLabel(self)
-        self.label7.setGeometry(20, 110, 700, 30)
+        self.label7.setGeometry(20, 140, 700, 30)
         self.label7.setFont(font3)
 
         self.label8 = QtGui.QLabel(self)
-        self.label8.setGeometry(20, 125, 700, 30)
+        self.label8.setGeometry(20, 155, 700, 30)
         self.label8.setFont(font2)
 
     def center(self):
@@ -205,7 +208,7 @@ class Window(QtGui.QMainWindow):
                 error_id = 1
                 self.label4.setText('<font color = red>Ошибка. '
                                     'Номером вопроса может быть только целое положительное число.<\\font>')
-                self.label7.setText('')      
+                self.label7.setText('')
                 self.label8.setText('')
         except NegativeError:
             if ok:
@@ -237,7 +240,7 @@ class Window(QtGui.QMainWindow):
 
         """ Conversion testing.
 
-        Opens the MessageBox to select options for saving of converted tests: a single file or separate.
+        Using the RadioButton to select options for saving of converted tests: a single file or separate.
         In the cycle:
             Open original tests, generated tuple correct answers, tests are closed.
             Open original tests, open for writing text files (using the context manager).
@@ -257,7 +260,7 @@ class Window(QtGui.QMainWindow):
 
         """
 
-        global error_id, success_id, n
+        global error_id, success_id, n, current_test
         error_id = None
         success_id = None
 
@@ -307,11 +310,11 @@ class Window(QtGui.QMainWindow):
             return None
 
         try:
-            if len(list_tests) > 0:
-                reply = QtGui.QMessageBox.question(self, 'Конвертирование', 'Для конвертирования тестов в один файл '
-                                                                            'нажмите "Yes", в отдельные - "No"',
-                                                   QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
-            
+            # if len(list_tests) > 0:
+                # reply = QtGui.QMessageBox.question(self, 'Конвертирование', 'Для конвертирования тестов в один файл '
+                #                                                            'нажмите "Yes", в отдельные - "No"',
+                #                                   QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
+
             i = 0
             for element in list_tests:
 
@@ -320,7 +323,7 @@ class Window(QtGui.QMainWindow):
                 if current_test.endswith('(ЦДО).txt'):
                     i += 1
                     continue
-      
+
                 test1 = open(current_test, 'r')
 
                 list_correct_answer = ()  # Tuple of correct answers
@@ -336,10 +339,16 @@ class Window(QtGui.QMainWindow):
 
                 test1 = open(current_test, 'r')
 
-                if reply == QtGui.QMessageBox.Yes:
+#                if reply == QtGui.QMessageBox.Yes:
+#                    ddd = current_test.rfind('\\') + 1
+#                    f2 = current_test[0:ddd] + 'ЦДО.txt'
+#                if reply == QtGui.QMessageBox.No:
+#                    f2 = current_test.replace('.txt', ' (ЦДО).txt')
+
+                if radio1.isChecked():
                     ddd = current_test.rfind('\\') + 1
                     f2 = current_test[0:ddd] + 'ЦДО.txt'
-                if reply == QtGui.QMessageBox.No:
+                elif radio2.isChecked():
                     f2 = current_test.replace('.txt', ' (ЦДО).txt')
 
                 file2 = f2
@@ -348,7 +357,7 @@ class Window(QtGui.QMainWindow):
 
                     x = 0
                     for line in test1:
-                        
+
                         if line.startswith('%*--'):  # If the string contains the question number
                             test2.write('\n' + '#L' + str(n) + ' W4' + '\n')
                             correct = list_correct_answer[x]  # Number of correct answers to the current question
@@ -360,7 +369,7 @@ class Window(QtGui.QMainWindow):
                         if start.isalpha() or start.isdigit():  # If the string contains a question
                             question = line[0:-3].strip()
                             test2.write(question + '\n')
-                     
+
                         if line.startswith('%*Ответ'):  # If the string contains answer
                             b += 1  # Increases the number of options
                             answer = line[11:-3].strip()
@@ -369,15 +378,18 @@ class Window(QtGui.QMainWindow):
                             test2.write(right_answer) if b == int(correct) else test2.write(wrong_answer)
 #                test2.close()
                 test1.close()
-                
+
                 i += 1
 
             success_id = 0
             self.label7.setText("<font color = green>Конвертирование завершено!<\\font>")
 
-            if reply == QtGui.QMessageBox.Yes:
+#            if reply == QtGui.QMessageBox.Yes:
+            if radio1.isChecked():
                 self.label8.setText('Файл "ЦДО.txt" с тестом в формате ЦДО сохранен в папке с исходными тестами.')
-            if reply == QtGui.QMessageBox.No:
+
+#            elif reply == QtGui.QMessageBox.No:
+            elif radio2.isChecked():
                 self.label8.setText('Файлы с тестами в формате ЦДО сохранены в папке с исходными тестами.')
 
         except NameError:
