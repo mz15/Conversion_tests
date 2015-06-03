@@ -8,7 +8,7 @@ class Window(QtGui.QMainWindow):
         self.setWindowIcon(QtGui.QIcon('icon.png'))
         self.setWindowTitle(self.trUtf8('Конвертирование тестов в формат ЦДО'))
         self.resize(520, 245)
-        self.center()
+        self.center()  # Function places the window in the center of the screen.
         self.statusBar()
         self.setMinimumSize(520, 245)
         self.setMaximumSize(520, 245)
@@ -30,7 +30,7 @@ class Window(QtGui.QMainWindow):
         self.convert.setStatusTip('Запуск конвертирования тестов в формат ЦДО')
         self.connect(self.convert, QtCore.SIGNAL('triggered()'), self.conversion)
 
-        self.menu = self.menuBar()
+        self.menu = self.menuBar()  # Create menu
         self.button1 = self.menu.addMenu('&Файл')
         self.button1.addAction(self.exit_program)
 
@@ -64,9 +64,10 @@ class Window(QtGui.QMainWindow):
         self.frame1.setGeometry(180, 15, 180, 100)
         self.gridlay1 = QtGui.QGridLayout(self.frame1)
 
-        self.group1 = QtGui.QGroupBox('Конвертировать тесты:', self.frame1) # Рамка с надписью вокруг группы элементов.
-        self.lay1 = QtGui.QVBoxLayout(self.group1)             # Менеджер размещения элементов в рамке.
+        self.group1 = QtGui.QGroupBox('Конвертировать тесты:', self.frame1)  # Frame with an inscription around.
+        self.lay1 = QtGui.QVBoxLayout(self.group1)  # Manager placement of elements in the frame.
 
+        # Two dependent RadioButton:
         self.radio1 = QtGui.QRadioButton('В один файл', self.group1)
         self.radio2 = QtGui.QRadioButton('В отдельные файлы', self.group1)
         self.radio2.setChecked(True)
@@ -97,8 +98,8 @@ class Window(QtGui.QMainWindow):
         self.flag.stateChanged.connect(self.state_changed)
 
         self.ln_edit = QtGui.QLineEdit('', self.group2)
-        self.ln_edit.setReadOnly(True)
-        self.ln_edit.setFrame(False)
+        self.ln_edit.setReadOnly(True)  # Read-only
+        self.ln_edit.setFrame(False)  # Without frame
         self.ln_edit.setText('1 (для всех тестов)')
 
 #        self.ln_edit.editingFinished.connect(self.input_number)
@@ -109,7 +110,7 @@ class Window(QtGui.QMainWindow):
 
         """ Third frame """
 
-        self.frame3 = QtGui.QFrame(self)  # Фрейм
+        self.frame3 = QtGui.QFrame(self)
         self.frame3.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame3.setFrameShadow(QtGui.QFrame.Raised)
         self.frame3.setGeometry(0, 100, 520, 70)
@@ -161,27 +162,20 @@ class Window(QtGui.QMainWindow):
     def state_changed(self):
         global number
 
-        if self.flag.isChecked():
-            self.ln_edit.setReadOnly(False)
-            self.ln_edit.setFrame(True)
-            self.ln_edit.setValidator(QtGui.QIntValidator(0, 999999999))
-            self.ln_edit.setPlaceholderText('Например: 1')
+        if self.flag.isChecked():  # If the flag is set
+            self.ln_edit.setReadOnly(False)  # Read-only
+            self.ln_edit.setFrame(True)  # With frame
+            self.ln_edit.setValidator(QtGui.QIntValidator(0, 999999999))  # Limit input
+            self.ln_edit.setPlaceholderText('Например: 1')  # Help
             self.ln_edit.textChanged.connect(self.input_number)
             self.ln_edit.clear()
             self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
         else:
-            self.ln_edit.setReadOnly(True)
-            self.ln_edit.setFrame(False)
+            self.ln_edit.setReadOnly(True)  # Read-only
+            self.ln_edit.setFrame(False)  # Without frame
             self.ln_edit.setText('1 (для всех тестов)')
             self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
             number = 1
-
-    def input_number(self):
-        global number
-        number = self.ln_edit.text()
-
-    def selection_radio_button(self):
-        self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
 
     def center(self):
 
@@ -191,6 +185,19 @@ class Window(QtGui.QMainWindow):
         size = self.geometry()
         self.move((screen.width() - size.width()) // 2, (screen.height() - size.height()) // 2)
 
+    def input_number(self):
+
+        """ The function starts when changing the text in LineEdit. LineEdit value assigned to the variable number. """
+
+        global number
+        number = self.ln_edit.text()
+
+    def selection_radio_button(self):
+
+        """ Function is starts when the user toggles the RadioButton. It clears the result of conversion. """
+
+        self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
+
     def select_files(self):
 
         """ File selection tests.
@@ -199,6 +206,7 @@ class Window(QtGui.QMainWindow):
         If you select at least one file:
             From the path to one of the selected files are retrieved path to a test that is displayed.
             Also displays the number of selected files.
+        If not selected any file conversion results and selecting the files are cleared
 
         """
 
@@ -249,8 +257,6 @@ class Window(QtGui.QMainWindow):
 
         Exceptions:
             ValueError - if you have entered is not an integer.
-            NegativeError - if you enter a negative integer.
-            ZeroError - if you enter zero.
             NameError - if no number is entered first question or if not selected any test.
             UnicodeDecodeError - if the wrong encoding original file.
 
@@ -259,7 +265,7 @@ class Window(QtGui.QMainWindow):
 
         """
 
-        global error_id, success_id, n, current_test
+        global error_id, success_id, current_test
         error_id = None
         success_id = None
 
@@ -278,9 +284,9 @@ class Window(QtGui.QMainWindow):
                 i = 0
                 for element in list_tests:
 
-                    if self.flag.isChecked():  # Если установлен флаг то сплошная нумерация с заданного числа
+                    if self.flag.isChecked():
                         None
-                    else:  # Иначе каждый тест с 1
+                    else:
                         n = 1
 
                     current_test = list_tests[i]
