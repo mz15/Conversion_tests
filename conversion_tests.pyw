@@ -7,138 +7,178 @@ class Window(QtGui.QMainWindow):
 
         self.setWindowIcon(QtGui.QIcon('icon.png'))
         self.setWindowTitle(self.trUtf8('Конвертирование тестов в формат ЦДО'))
-        self.resize(1000, 175)
+        self.resize(520, 245)
         self.center()
         self.statusBar()
-        self.setMinimumSize(1000, 205)
-#        self.setMaximumSize(1000, 205)
+        self.setMinimumSize(520, 245)
+        self.setMaximumSize(520, 245)
 #        self.setGeometry(100, 100, 1000, 205)
-#        self.statusBar().showMessage('Ready')
-#        self.setFocus()
-#        self.textEdit = QtGui.QTextEdit()
-#        self.setCentralWidget(self.textEdit)
+#        self.statusBar().showMessage('Pleshkov Andrey')
 
-        exit_program = QtGui.QAction(QtGui.QIcon('open.png'), 'Закрыть программу', self)
-        exit_program.setShortcut('Ctrl+Q')
-        exit_program.setStatusTip('Выход из программы')
-        self.connect(exit_program, QtCore.SIGNAL('triggered()'), exit)
+        self.exit_program = QtGui.QAction(QtGui.QIcon('open.png'), 'Закрыть программу', self)
+        self.exit_program.setShortcut('Ctrl+Q')
+        self.exit_program.setStatusTip('Выход из программы')
+        self.connect(self.exit_program, QtCore.SIGNAL('triggered()'), exit)
 
-        select_folder = QtGui.QAction(QtGui.QIcon('open.png'), 'Выбрать файлы с тестами', self)
-        select_folder.setShortcut('Ctrl+O')
-        select_folder.setStatusTip('Выбор файлов с тестами в исходном формате')
-        self.connect(select_folder, QtCore.SIGNAL('triggered()'), self.select_files)
+        self.select_folder = QtGui.QAction(QtGui.QIcon('open.png'), 'Выбрать файлы с тестами', self)
+        self.select_folder.setShortcut('Ctrl+O')
+        self.select_folder.setStatusTip('Выбор файлов с тестами в исходном формате')
+        self.connect(self.select_folder, QtCore.SIGNAL('triggered()'), self.select_files)
 
-        input_number = QtGui.QAction(QtGui.QIcon('open.png'), 'Ввести номер первого вопроса', self)
-        input_number.setShortcut('Ctrl+N')
-        input_number.setStatusTip('Ввод номера, который будет присвоен первому вопросу отконвертированного теста')
-        self.connect(input_number, QtCore.SIGNAL('triggered()'), self.input_number)
+        self.convert = QtGui.QAction(QtGui.QIcon('open.png'), 'Отконвертировать тесты', self)
+        self.convert.setShortcut('Ctrl+K')
+        self.convert.setStatusTip('Запуск конвертирования тестов в формат ЦДО')
+        self.connect(self.convert, QtCore.SIGNAL('triggered()'), self.conversion)
 
-        convert = QtGui.QAction(QtGui.QIcon('open.png'), 'Отконвертировать тесты', self)
-        convert.setShortcut('Ctrl+K')
-        convert.setStatusTip('Запуск конвертирования тестов в формат ЦДО')
-        self.connect(convert, QtCore.SIGNAL('triggered()'), self.conversion)
+        self.menu = self.menuBar()
+        self.button1 = self.menu.addMenu('&Файл')
+        self.button1.addAction(self.exit_program)
 
-        menu = self.menuBar()
-        button1 = menu.addMenu('&Файл')
-        button1.addAction(exit_program)
+        self.button2 = self.menu.addMenu('&Конвертирование')
+        self.button2.addAction(self.select_folder)
+        self.button2.addAction(self.convert)
 
-        button2 = menu.addMenu('&Конвертирование')
-        button2.addAction(select_folder)
-        button2.addAction(input_number)
-        button2.addAction(convert)
+        self.font2 = QtGui.QFont(self)
+        self.font2.setBold(False)
+        self.font2.setPixelSize(12)
 
-        font1 = QtGui.QFont(self)
-        font1.setBold(True)
-        font1.setPixelSize(12)
-
-        font2 = QtGui.QFont(self)
-        font2.setBold(False)
-        font2.setPixelSize(12)
-
-        font3 = QtGui.QFont(self)
-        font3.setBold(True)
-        font3.setPixelSize(14)
-
-        self.button1 = QtGui.QPushButton('Выбрать файлы с тестами', self)
-        self.button1.setGeometry(20, 35, 170, 30)
-        self.button1.setFont(font2)
-        self.button1.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.button1.setStatusTip('Выбор файлов с тестами в исходном формате')
-        self.connect(self.button1, QtCore.SIGNAL('clicked()'), self.select_files)
-
-        self.button2 = QtGui.QPushButton('Ввести номер первого вопроса', self)
-        self.button2.setFont(font2)
-        self.button2.setGeometry(410, 35, 200, 30)
-        self.button2.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.button2.setStatusTip('Ввод номера, который будет присвоен первому вопросу отконвертированного теста')
-        self.connect(self.button2, QtCore.SIGNAL('clicked()'), self.input_number)
-
-        self.button3 = QtGui.QPushButton('Отконвертировать тесты', self)
-        self.button3.setFont(font2)
-        self.button3.setGeometry(625, 35, 200, 30)
+        self.button3 = QtGui.QPushButton('Выбрать файлы с тестами', self)
+        self.button3.setGeometry(10, 32, 170, 32)
+        self.button3.setFont(self.font2)
         self.button3.setFocusPolicy(QtCore.Qt.NoFocus)
-        self.button3.setStatusTip('Запуск конвертирования тестов в формат ЦДО')
-        self.connect(self.button3, QtCore.SIGNAL('clicked()'), self.conversion)
-# ----------------------------------------------------
-# хрень:
-        frame = QtGui.QFrame(self)  # Фрейм
-        frame.setFrameShape(QtGui.QFrame.StyledPanel)
-        frame.setFrameShadow(QtGui.QFrame.Raised)
-        frame.setGeometry(200, 15, 200, 90)
-        gridlay = QtGui.QGridLayout(frame)
+        self.button3.setStatusTip('Выбор файлов с тестами в исходном формате')
+        self.connect(self.button3, QtCore.SIGNAL('clicked()'), self.select_files)
 
-        radio_group = QtGui.QGroupBox(u"Отконвертировать тесты:", frame) # Рамка с надписью вокруг группы элементов.
-        radio_lay = QtGui.QVBoxLayout(radio_group)             # Менеджер размещения элементов в рамке.
+        self.button4 = QtGui.QPushButton('Отконвертировать тесты', self)
+        self.button4.setFont(self.font2)
+        self.button4.setGeometry(10, 71, 170, 32)
+        self.button4.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.button4.setStatusTip('Запуск конвертирования тестов в формат ЦДО')
+        self.connect(self.button4, QtCore.SIGNAL('clicked()'), self.conversion)
 
-        global radio1, radio2
+        """ First frame """
 
-        radio1 = QtGui.QRadioButton(u"В один файл", radio_group) # Два зависимых
-        radio2 = QtGui.QRadioButton(u"В отдельные файлы", radio_group) # переключателя
-        radio1.setChecked(True)
-        radio_lay.addWidget(radio1)
-        radio_lay.addWidget(radio2)
-        gridlay.addWidget(radio_group, 0, 0, 0, 0)
-# -------------------------------------------------------------
+        self.frame1 = QtGui.QFrame(self)
+        self.frame1.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame1.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame1.setGeometry(180, 15, 180, 100)
+        self.gridlay1 = QtGui.QGridLayout(self.frame1)
 
-        self.label1 = QtGui.QLabel(self)
-        self.label1.setGeometry(20, 95, 105, 30)
-        self.label1.setFont(font1)
-        self.label1.setText('Папка с тестами:')
+        self.group1 = QtGui.QGroupBox('Конвертировать тесты:', self.frame1) # Рамка с надписью вокруг группы элементов.
+        self.lay1 = QtGui.QVBoxLayout(self.group1)             # Менеджер размещения элементов в рамке.
 
-        self.label2 = QtGui.QLabel(self)
-        self.label2.setGeometry(135, 95, 1300, 30)
-#        self.label2.move(135, 65)
-        self.label2.setFont(font2)
-        self.label2.setText('не задана')
-#        self.label2.adjustSize()
-#        self.label2.resize(self.label2.sizeHint())
-#        self.label2.setScaledContents(True)
+        self.radio1 = QtGui.QRadioButton('В один файл', self.group1)
+        self.radio2 = QtGui.QRadioButton('В отдельные файлы', self.group1)
+        self.radio2.setChecked(True)
 
-        self.label3 = QtGui.QLabel(self)
-        self.label3.setGeometry(20, 110, 130, 30)
-        self.label3.setFont(font1)
-        self.label3.setText('№ первого вопроса:')
+        self.lay1.addWidget(self.radio1)
+        self.lay1.addWidget(self.radio2)
+        self.gridlay1.addWidget(self.group1, 0, 0, 0, 0)
+        self.radio1.toggled.connect(self.selection_radio_button)
 
-        self.label4 = QtGui.QLabel(self)
-        self.label4.setGeometry(160, 110, 500, 30)
-        self.label4.setFont(font2)
-        self.label4.setText('не задан')
+        """ Second frame """
 
-        self.label5 = QtGui.QLabel(self)
-        self.label5.setGeometry(20, 125, 130, 30)
-        self.label5.setFont(font1)
+        self.frame2 = QtGui.QFrame(self)
+        self.frame2.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame2.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame2.setGeometry(350, 15, 170, 100)
+        self.gridlay2 = QtGui.QGridLayout(self.frame2)
 
-        self.label6 = QtGui.QLabel(self)
-        self.label6.setGeometry(160, 125, 700, 30)
-        self.label6.setFont(font2)
+        self.group2 = QtGui.QGroupBox('Номер первого вопроса:', self.frame2)
+        self.lay2 = QtGui.QVBoxLayout(self.group2)
 
-        self.label7 = QtGui.QLabel(self)
-        self.label7.setGeometry(20, 140, 700, 30)
-        self.label7.setFont(font3)
+        self.flag = QtGui.QCheckBox('Сквозная нумерация', self.group2)
+        self.flag.setCheckState(QtCore.Qt.Unchecked)
 
-        self.label8 = QtGui.QLabel(self)
-        self.label8.setGeometry(20, 155, 700, 30)
-        self.label8.setFont(font2)
+        self.lay2.addWidget(self.flag)
+        self.flag.stateChanged.connect(self.state_changed)
+
+        self.ln_edit = QtGui.QLineEdit('', self.group2)
+        self.ln_edit.setReadOnly(True)
+        self.ln_edit.setFrame(False)
+        self.ln_edit.setText('1 (для всех тестов)')
+
+#        self.ln_edit.editingFinished.connect(self.input_number)
+        self.ln_edit.textChanged.connect(self.input_number)
+
+        self.lay2.addWidget(self.ln_edit)
+        self.gridlay2.addWidget(self.group2, 0, 0, 0, 0)
+
+        """ Third frame """
+
+        self.frame3 = QtGui.QFrame(self)  # Фрейм
+        self.frame3.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame3.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame3.setGeometry(0, 100, 520, 70)
+        self.gridlay3 = QtGui.QGridLayout(self.frame3)
+
+        self.group3 = QtGui.QGroupBox('Папка с тестами:', self.frame3)
+        self.lay3 = QtGui.QVBoxLayout(self.group3)
+
+        self.label1 = QtGui.QLabel(self.group3)
+        self.label1.setText('<font color = grey>Файлы не выбраны<\\font>')
+
+        self.lay3.addWidget(self.label1)
+        self.gridlay3.addWidget(self.group3, 0, 0, 0, 0)
+
+        """ Fourth frame """
+
+        self.frame4 = QtGui.QFrame(self)  # Фрейм
+        self.frame4.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame4.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame4.setGeometry(0, 155, 145, 75)
+        self.gridlay4 = QtGui.QGridLayout(self.frame4)
+
+        self.group4 = QtGui.QGroupBox('Количество файлов:', self.frame4)
+        self.lay4 = QtGui.QVBoxLayout(self.group4)
+
+        self.label2 = QtGui.QLabel(self.group4)
+        self.label2.setText('<font color = grey>Файлы не выбраны<\\font>')
+
+        self.lay4.addWidget(self.label2)
+        self.gridlay4.addWidget(self.group4, 0, 0, 0, 0)
+
+        """ Fifth frame """
+
+        self.frame5 = QtGui.QFrame(self)  # Фрейм
+        self.frame5.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame5.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame5.setGeometry(135, 155, 385, 75)
+        self.gridlay5 = QtGui.QGridLayout(self.frame5)
+
+        self.group5 = QtGui.QGroupBox('Результат конвертирования:', self.frame5)
+        self.lay5 = QtGui.QVBoxLayout(self.group5)
+
+        self.label3 = QtGui.QLabel(self.group5)
+        self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
+
+        self.lay5.addWidget(self.label3)
+        self.gridlay5.addWidget(self.group5, 0, 0, 0, 0)
+
+    def state_changed(self):
+        global number
+
+        if self.flag.isChecked():
+            self.ln_edit.setReadOnly(False)
+            self.ln_edit.setFrame(True)
+            self.ln_edit.setValidator(QtGui.QIntValidator(0, 999999999))
+            self.ln_edit.setPlaceholderText('Например: 1')
+            self.ln_edit.clear()
+            self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
+
+        else:
+            self.ln_edit.setReadOnly(True)
+            self.ln_edit.setFrame(False)
+            self.ln_edit.setText('1 (для всех тестов)')
+            self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
+            number = 1
+
+    def input_number(self):
+        global number
+        number = self.ln_edit.text()
+
+    def selection_radio_button(self):
+        self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
 
     def center(self):
 
@@ -146,7 +186,7 @@ class Window(QtGui.QMainWindow):
 
         screen = QtGui.QDesktopWidget().screenGeometry()
         size = self.geometry()
-        self.move((screen.width()-size.width())//2, (screen.height()-size.height())//2)
+        self.move((screen.width() - size.width()) // 2, (screen.height() - size.height()) // 2)
 
     def select_files(self):
 
@@ -167,64 +207,14 @@ class Window(QtGui.QMainWindow):
             dd = d.rfind('\\')
             folder = d[0:dd]
 
-            self.label2.setText(str(folder))
-            self.label5.setText('Количество файлов:')
-            self.label6.setText(str(len(list_tests)))
-            self.label7.setText('')
-            self.label8.setText('')
+            self.label2.setText('<font color = grey>' + str(len(list_tests)) + '<\\font>')
+            self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
 
-    def input_number(self):
-
-        """ Enter the number of the first question.
-
-        InputDialog opens to enter the number (positive integer) from which to start numbering of converted questions.
-        Displays the number entered or an error message. If error occurs, a window opens with an error message.
-
-        Exceptions:
-            ValueError - if you have entered is not an integer.
-            NegativeError - if you enter a negative integer.
-            ZeroError - if you enter zero.
-
-        """
-
-        global number, n, error_id
-        error_id = None
-
-        number, ok = QtGui.QInputDialog.getText(self, 'Номер первого вопроса',
-                                                'Введите номер, который будет присвоен первому вопросу теста:')
-
-        try:
-            if ok:
-                n = int(number)
-                if n < 0:
-                    raise NegativeError('Ошибка. Нумерация вопросов не может начинаться с отрицательного числа.')
-                if n == 0:
-                    raise ZeroError('Ошибка. Нумерация вопросов не может начинаться с нуля.')
-                self.label4.setText(number)
-                self.label7.setText('')
-                self.label8.setText('')
-        except ValueError:
-            if ok:
-                error_id = 1
-                self.label4.setText('<font color = red>Ошибка. '
-                                    'Номером вопроса может быть только целое положительное число.<\\font>')
-                self.label7.setText('')
-                self.label8.setText('')
-        except NegativeError:
-            if ok:
-                error_id = 1
-                self.label4.setText('<font color = red>' + NegativeError.text + '<\\font>')
-                self.label7.setText('')
-                self.label8.setText('')
-        except ZeroError:
-            if ok:
-                error_id = 1
-                self.label4.setText('<font color = red>' + ZeroError.text + '<\\font>')
-                self.label7.setText('')
-                self.label8.setText('')
-
-        if error_id is not None:  # If an error occurs, a message box opens
-            self.error_window()
+            if len(str(folder)) > 80:
+                label1_text = str(folder)[0:80] + '... '
+                self.label1.setText('<font color = grey>' + label1_text + '<\\font>')
+            else:
+                self.label1.setText('<font color = grey>' + str(folder) + '<\\font>')
 
     def closeEvent(self, event):  # Confirmation of exit
 
@@ -250,8 +240,6 @@ class Window(QtGui.QMainWindow):
 
         Exceptions:
             ValueError - if you have entered is not an integer.
-            NegativeError - if you enter a negative integer.
-            ZeroError - if you enter zero.
             NameError - if no number is entered first question or if not selected any test.
             UnicodeDecodeError - if the wrong encoding original file.
 
@@ -266,61 +254,17 @@ class Window(QtGui.QMainWindow):
 
         try:
             n = int(number)
-
-            if n < 0:
-                raise NegativeError('Невозможно начать конвертирование. Неверно задан номер вопроса.')
-            if n == 0:
-                raise ZeroError('Невозможно начать конвертирование. Неверно задан номер вопроса.')
-
-        except ValueError:  # If you have entered is not an integer
-            error_id = 1
-            self.label7.setText('<font color = red>Невозможно начать конвертирование. '
-                                'Неверно задан номер вопроса.<\\font>')
-
-            if error_id is not None:  # If an error occurs, a message box opens
-                self.error_window()
-
-            return None
-
-        except NegativeError:
-            error_id = 1
-            self.label7.setText('<font color = red>' + NegativeError.text + '<\\font>')
-
-            if error_id is not None:  # If an error occurs, a message box opens
-                self.error_window()
-
-            return None
-
-        except ZeroError:
-            error_id = 1
-            self.label7.setText('<font color = red>' + ZeroError.text + '<\\font>')
-
-            if error_id is not None:  # If an error occurs, a message box opens
-                self.error_window()
-
-            return None
-
-        except NameError:
-            error_id = 1
-            self.label7.setText('<font color = red>Невозможно начать конвертирование. '
-                                'Не задан номер первого вопроса.<\\font>')
-            if error_id is not None:  # If an error occurs, a message box opens
-                self.error_window()
-
-            return None
-
-        try:
-            # if len(list_tests) > 0:
-                # reply = QtGui.QMessageBox.question(self, 'Конвертирование', 'Для конвертирования тестов в один файл '
-                #                                                            'нажмите "Yes", в отдельные - "No"',
-                #                                   QtGui.QMessageBox.No, QtGui.QMessageBox.Yes)
-
             i = 0
             for element in list_tests:
 
+                if self.flag.isChecked():  # Если установлен флаг то сплошная нумерация с заданного числа
+                    None
+                else:  # Иначе каждый тест с 1
+                    n = 1
+
                 current_test = list_tests[i]
 
-                if current_test.endswith('(ЦДО).txt'):
+                if current_test.endswith('(ЦДО).txt') or current_test.endswith('ЦДО.txt'):
                     i += 1
                     continue
 
@@ -337,21 +281,16 @@ class Window(QtGui.QMainWindow):
 
                 test1.close()
 
-                test1 = open(current_test, 'r')
-
-#                if reply == QtGui.QMessageBox.Yes:
-#                    ddd = current_test.rfind('\\') + 1
-#                    f2 = current_test[0:ddd] + 'ЦДО.txt'
-#                if reply == QtGui.QMessageBox.No:
-#                    f2 = current_test.replace('.txt', ' (ЦДО).txt')
-
-                if radio1.isChecked():
+                if self.radio1.isChecked():
                     ddd = current_test.rfind('\\') + 1
                     f2 = current_test[0:ddd] + 'ЦДО.txt'
-                elif radio2.isChecked():
+                elif self.radio2.isChecked():
                     f2 = current_test.replace('.txt', ' (ЦДО).txt')
 
                 file2 = f2
+
+                test1 = open(current_test, 'r')
+
 #                test2 = open(file2, 'a')
                 with open(file2, 'a') as test2:
 
@@ -382,24 +321,17 @@ class Window(QtGui.QMainWindow):
                 i += 1
 
             success_id = 0
-            self.label7.setText("<font color = green>Конвертирование завершено!<\\font>")
+            self.label3.setText('<font color = green>Конвертирование успешно завершено!<\\font>')
 
-#            if reply == QtGui.QMessageBox.Yes:
-            if radio1.isChecked():
-                self.label8.setText('Файл "ЦДО.txt" с тестом в формате ЦДО сохранен в папке с исходными тестами.')
-
-#            elif reply == QtGui.QMessageBox.No:
-            elif radio2.isChecked():
-                self.label8.setText('Файлы с тестами в формате ЦДО сохранены в папке с исходными тестами.')
-
+        except ValueError:
+            error_id = 1
+            self.label3.setText('<font color = red>Невозможно начать конвертирование<\\font>')
         except NameError:
             error_id = 0
-            self.label7.setText('<font color = red>Невозможно начать конвертирование. '
-                                'Не выбрано ни одного файла с тестом.<\\font>')
+            self.label3.setText('<font color = red>Невозможно начать конвертирование<\\font>')
         except UnicodeDecodeError:
             error_id = 2
-            self.label7.setText('<font color = red>Невозможно начать конвертирование. '
-                                'Исходные тесты должны быть в кодировке ANSI<\\font>')
+            self.label3.setText('<font color = red>Невозможно начать конвертирование<\\font>')
 
         if error_id is not None:  # If an error occurs, a message box opens
             self.error_window()
@@ -426,11 +358,12 @@ class SuccessMessage(QtGui.QMessageBox):
     def __init__(self, success_id):
         QtGui.QMessageBox.__init__(self)
         self.setWindowTitle('Успех')
+        self.setWindowIcon(QtGui.QIcon('icon.png'))
         self.setIcon(QtGui.QMessageBox.Information)
         self.addButton('ОК', QtGui.QMessageBox.AcceptRole)
 
         if success_id == 0:
-            self.setText(u"Конвертирование завершено")
+            self.setText(u"Конвертирование успешно завершено! ")
 
 class ErrorMessage(QtGui.QMessageBox):
     def __init__(self, error_id):
@@ -441,19 +374,11 @@ class ErrorMessage(QtGui.QMessageBox):
         self.addButton('ОК', QtGui.QMessageBox.AcceptRole)
 
         if error_id == 0:
-            self.setText(u"Не выбраны тесты")
+            self.setText('Сначала выберите файлы с тестами для конвертирования.')
         elif error_id == 1:
-            self.setText(u"Неверно введен номер первого вопроса")
+            self.setText('Сначала введите номер первого вопроса.')
         elif error_id == 2:
-            self.setText(u"Неверная кодировка исходного теста")
-
-class NegativeError(Exception):
-    def __init__(self, text):
-        NegativeError.text = text
-
-class ZeroError(Exception):
-    def __init__(self, text):
-        ZeroError.text = text
+            self.setText('Исходный файл с тестом должен быть в кодировке ANSI.')
 
 app = QtGui.QApplication(sys.argv)
 qb = Window()
