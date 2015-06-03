@@ -1,3 +1,5 @@
+# coding utf-8
+
 import sys
 from PyQt4 import QtGui, QtCore
 
@@ -108,7 +110,7 @@ class Window(QtGui.QMainWindow):
         self.lay2.addWidget(self.ln_edit)
         self.gridlay2.addWidget(self.group2, 0, 0, 0, 0)
 
-        """ Third frame ----------------------------------------------------- """
+        """ Third frame """
 
         self.frame3 = QtGui.QFrame(self)
         self.frame3.setFrameShape(QtGui.QFrame.StyledPanel)
@@ -201,6 +203,14 @@ class Window(QtGui.QMainWindow):
         self.gridlay7.addWidget(self.group7, 0, 0, 0, 0)
 
     def state_changed(self):
+
+        """
+
+        The function starts when changing the status flag 'Сквозная нумерация'
+        Depending on the status of the flag to set parameters for a LineEdit (enter the number).
+
+        """
+
         global number
 
         if self.flag.isChecked():  # If the flag is set
@@ -210,6 +220,7 @@ class Window(QtGui.QMainWindow):
             self.ln_edit.setPlaceholderText('Например: 1')  # Help
             self.ln_edit.textChanged.connect(self.input_number)
             self.ln_edit.clear()
+
         else:
             self.ln_edit.setReadOnly(True)  # Read-only
             self.ln_edit.setFrame(False)  # Frame
@@ -219,6 +230,14 @@ class Window(QtGui.QMainWindow):
         self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
 
     def state_changed2(self):
+
+        """
+
+        The function starts when changing the status flag 'Изменить'
+        Depending on the status of the flag to set parameters for a LineEdit (enter the name).
+
+        """
+
         global error_id
         error_id = None
 
@@ -357,6 +376,7 @@ class Window(QtGui.QMainWindow):
             ValueError - if you have entered is not an integer.
             NameError - if no number is entered first question or if not selected any test.
             UnicodeDecodeError - if the wrong encoding original file.
+            OSError - if the input field name of the output file type invalid characters.
 
         Problems: the exception is invoked only if the original file in UTF-8 encoding. In any other encoding
         (except ANSI) during the conversion error will not occur, but the conversion will not work correctly.
@@ -378,7 +398,7 @@ class Window(QtGui.QMainWindow):
                 return
 
         try:
-            if len(list_tests) > 0:
+            if len(list_tests) > 0 and len(name) > 0:
                 i = 0
                 for element in list_tests:
 
@@ -455,8 +475,12 @@ class Window(QtGui.QMainWindow):
                 success_id = 0
                 self.label3.setText('<font color = green>Конвертирование успешно завершено!<\\font>')
 
-            else:
+            elif len(list_tests) == 0 and len(name) > 0:
                 error_id = 0
+            elif len(list_tests) > 0 and len(name) == 0:
+                error_id = 4
+            elif len(list_tests) == 0 and len(name) == 0:
+                error_id = 5
 
         except NameError:
             error_id = 0
@@ -464,6 +488,10 @@ class Window(QtGui.QMainWindow):
         except UnicodeDecodeError:
             error_id = 2
             self.label3.setText('<font color = red>Невозможно начать конвертирование<\\font>')
+        except OSError:
+            error_id = 6
+            self.label3.setText('<font color = red>Невозможно начать конвертирование<\\font>')
+            self.ln_edit2.selectAll()
 
         if error_id is not None:  # If an error occurs, a message box opens
             self.error_window()
@@ -488,6 +516,9 @@ class Window(QtGui.QMainWindow):
 
 class SuccessMessage(QtGui.QMessageBox):
     def __init__(self, success_id):
+
+        """ It describes the parameters of the window with the success message and set success codes. """
+
         QtGui.QMessageBox.__init__(self)
         self.setWindowTitle('Успех')
         self.setWindowIcon(QtGui.QIcon('icon.png'))
@@ -499,6 +530,9 @@ class SuccessMessage(QtGui.QMessageBox):
 
 class ErrorMessage(QtGui.QMessageBox):
     def __init__(self, error_id):
+
+        """ It describes the parameters of the window with the error message and set error codes. """
+
         QtGui.QMessageBox.__init__(self)
         self.setWindowTitle('Ошибка')
         self.setWindowIcon(QtGui.QIcon('icon.png'))
@@ -512,7 +546,14 @@ class ErrorMessage(QtGui.QMessageBox):
         elif error_id == 2:
             self.setText('Исходный файл с тестом должен быть в кодировке ANSI.')
         elif error_id == 3:
-            self.setText('При выборе конвертирования в отдельные файлы нельзя изменить имя файлов.')
+            self.setText('При выборе конвертирования в отдельные файлы нельзя изменить имена выходных файлов. '
+                         'Им будут присвоены имена вида "test (ЦДО).txt", где test - имя исходного файла.')
+        elif error_id == 4:
+            self.setText('Сначала введите имя выходного файла.')
+        elif error_id == 5:
+            self.setText('Сначала выбере файлы с тестами для конвертирования и введите имя выходного файла.')
+        elif error_id == 6:
+            self.setText('Имя выходного файла не может содержать символы \ / : " ? * | < >')
 
 app = QtGui.QApplication(sys.argv)
 qb = Window()
