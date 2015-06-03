@@ -1,4 +1,4 @@
-# coding utf-8
+# coding: utf8
 
 import sys
 from PyQt4 import QtGui, QtCore
@@ -71,7 +71,9 @@ class Window(QtGui.QMainWindow):
 
         # Two dependent RadioButton:
         self.radio1 = QtGui.QRadioButton('В один файл', self.group1)
+        self.radio1.setStatusTip('Все тесты после конвертирования будут сохранены в один файл')
         self.radio2 = QtGui.QRadioButton('В отдельные файлы', self.group1)
+        self.radio2.setStatusTip('Каждый тест после конвертирования будет сохранен в отдельный файл')
         self.radio2.setChecked(True)
 
         self.lay1.addWidget(self.radio1)
@@ -94,6 +96,7 @@ class Window(QtGui.QMainWindow):
         self.lay2 = QtGui.QVBoxLayout(self.group2)
 
         self.flag = QtGui.QCheckBox('Сквозная нумерация', self.group2)
+        self.flag.setStatusTip('Нумерация вопросов каждого теста не сбрасывается, а продолжается')
         self.flag.setCheckState(QtCore.Qt.Unchecked)
 
         self.lay2.addWidget(self.flag)
@@ -103,6 +106,7 @@ class Window(QtGui.QMainWindow):
         self.ln_edit.setReadOnly(True)  # Read-only
         self.ln_edit.setFrame(False)  # Frame
         self.ln_edit.setText('1 (для всех тестов)')
+        self.ln_edit.setStatusTip('Нумерация вопросов каждого теста будет начинаться с единицы')
 
 #        self.ln_edit.editingFinished.connect(self.input_number)
 #        self.ln_edit.textChanged.connect(self.input_number)
@@ -122,11 +126,13 @@ class Window(QtGui.QMainWindow):
         self.lay3 = QtGui.QVBoxLayout(self.group3)
 
         self.flag2 = QtGui.QCheckBox('Изменить', self.group3)
+        self.flag2.setStatusTip('Изменить имя выходного файла (доступно только при конвертировании в один файл)')
         self.flag2.setCheckState(QtCore.Qt.Unchecked)
         self.lay3.addWidget(self.flag2)
         self.flag2.stateChanged.connect(self.state_changed2)
 
         self.ln_edit2 = QtGui.QLineEdit('', self.group3)
+        self.ln_edit2.setStatusTip('Формат имен выходных файлов: test - имя исходного файла с тестом')
         self.ln_edit2.setReadOnly(True)  # Read-only
         self.ln_edit2.setFrame(False)  # Frame
         self.ln_edit2.setText('test (ЦДО)')
@@ -137,6 +143,7 @@ class Window(QtGui.QMainWindow):
         """ Fourth frame """
 
         self.frame4 = QtGui.QFrame(self)
+        self.frame4.setStatusTip('Путь к папке, в которой находятся выбранные файлы с тестами для конвертирования')
         self.frame4.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame4.setFrameShadow(QtGui.QFrame.Raised)
         self.frame4.setGeometry(0, 100, 650, 70)
@@ -154,6 +161,7 @@ class Window(QtGui.QMainWindow):
         """ Fifth frame """
 
         self.frame5 = QtGui.QFrame(self)
+        self.frame5.setStatusTip('Количество файлов, выбранных для конвертирования')
         self.frame5.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame5.setFrameShadow(QtGui.QFrame.Raised)
         self.frame5.setGeometry(0, 155, 145, 75)
@@ -188,6 +196,7 @@ class Window(QtGui.QMainWindow):
         """ Seventh frame """
 
         self.frame7 = QtGui.QFrame(self)
+        self.frame7.setStatusTip('Author: Andrey Pleshkov (ITMO University) © 2015')
         self.frame7.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame7.setFrameShadow(QtGui.QFrame.Raised)
         self.frame7.setGeometry(400, 155, 250, 75)
@@ -220,11 +229,13 @@ class Window(QtGui.QMainWindow):
             self.ln_edit.setPlaceholderText('Например: 1')  # Help
             self.ln_edit.textChanged.connect(self.input_number)
             self.ln_edit.clear()
+            self.ln_edit.setStatusTip('Номер, с которого начнется сквозная нумерация вопросов')
 
         else:
             self.ln_edit.setReadOnly(True)  # Read-only
             self.ln_edit.setFrame(False)  # Frame
             self.ln_edit.setText('1 (для всех тестов)')
+            self.ln_edit.setStatusTip('Нумерация вопросов каждого теста будет начинаться с единицы')
             number = 1
 
         self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
@@ -249,12 +260,14 @@ class Window(QtGui.QMainWindow):
                 self.ln_edit2.setPlaceholderText('Например: ЦДО')  # Help
                 self.ln_edit2.textChanged.connect(self.input_name)
                 self.ln_edit2.clear()
+                self.ln_edit2.setStatusTip('Введите имя выходного файла')
 #                self.ln_edit2.setInputMask('Имя: NNNNNNNNNNN.t\\xt')
 
             else:
                 self.ln_edit2.setReadOnly(True)  # Read-only
                 self.ln_edit2.setFrame(False)  # Frame
                 self.ln_edit2.setText('ЦДО')
+                self.ln_edit2.setStatusTip('Имя выходного файла')
 
         elif self.radio2.isChecked():
 
@@ -266,6 +279,7 @@ class Window(QtGui.QMainWindow):
                 self.ln_edit2.setReadOnly(True)  # Read-only
                 self.ln_edit2.setFrame(False)  # Frame
                 self.ln_edit2.setText('test (ЦДО)')
+                self.ln_edit2.setStatusTip('Формат имен выходных файлов: test - имя исходного файла с тестом')
 
         if error_id is not None:  # If an error occurs, a message box opens
                 self.error_window()
@@ -307,11 +321,13 @@ class Window(QtGui.QMainWindow):
             self.ln_edit2.setReadOnly(True)  # Read-only
             self.ln_edit2.setFrame(False)  # Frame
             self.ln_edit2.setText('ЦДО')
+            self.ln_edit2.setStatusTip('Имя выходного файла')
 
         elif self.radio2.isChecked():
             self.ln_edit2.setReadOnly(True)  # Read-only
             self.ln_edit2.setFrame(False)  # Frame
             self.ln_edit2.setText('test (ЦДО)')
+            self.ln_edit2.setStatusTip('Формат имен выходных файлов: test - имя исходного файла с тестом')
 
         self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
 
