@@ -78,6 +78,9 @@ class Window(QtGui.QMainWindow):
 
         """ Second frame """
 
+        global number
+        number = 1
+
         self.frame2 = QtGui.QFrame(self)
         self.frame2.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame2.setFrameShadow(QtGui.QFrame.Raised)
@@ -99,7 +102,7 @@ class Window(QtGui.QMainWindow):
         self.ln_edit.setText('1 (для всех тестов)')
 
 #        self.ln_edit.editingFinished.connect(self.input_number)
-        self.ln_edit.textChanged.connect(self.input_number)
+#        self.ln_edit.textChanged.connect(self.input_number)
 
         self.lay2.addWidget(self.ln_edit)
         self.gridlay2.addWidget(self.group2, 0, 0, 0, 0)
@@ -163,9 +166,9 @@ class Window(QtGui.QMainWindow):
             self.ln_edit.setFrame(True)
             self.ln_edit.setValidator(QtGui.QIntValidator(0, 999999999))
             self.ln_edit.setPlaceholderText('Например: 1')
+            self.ln_edit.textChanged.connect(self.input_number)
             self.ln_edit.clear()
             self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
-
         else:
             self.ln_edit.setReadOnly(True)
             self.ln_edit.setFrame(False)
@@ -203,6 +206,7 @@ class Window(QtGui.QMainWindow):
         list_tests = QtGui.QFileDialog.getOpenFileNames(self, 'Выбрать файлы', '', '*.txt')
 
         if len(list_tests) > 0:
+
             d = list_tests[0]
             dd = d.rfind('\\')
             folder = d[0:dd]
@@ -215,6 +219,11 @@ class Window(QtGui.QMainWindow):
                 self.label1.setText('<font color = grey>' + label1_text + '<\\font>')
             else:
                 self.label1.setText('<font color = grey>' + str(folder) + '<\\font>')
+
+        else:
+            self.label1.setText('<font color = grey>Файлы не выбраны<\\font>')
+            self.label2.setText('<font color = grey>Файлы не выбраны<\\font>')
+            self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
 
     def closeEvent(self, event):  # Confirmation of exit
 
@@ -240,6 +249,8 @@ class Window(QtGui.QMainWindow):
 
         Exceptions:
             ValueError - if you have entered is not an integer.
+            NegativeError - if you enter a negative integer.
+            ZeroError - if you enter zero.
             NameError - if no number is entered first question or if not selected any test.
             UnicodeDecodeError - if the wrong encoding original file.
 
@@ -254,78 +265,88 @@ class Window(QtGui.QMainWindow):
 
         try:
             n = int(number)
-            i = 0
-            for element in list_tests:
-
-                if self.flag.isChecked():  # Если установлен флаг то сплошная нумерация с заданного числа
-                    None
-                else:  # Иначе каждый тест с 1
-                    n = 1
-
-                current_test = list_tests[i]
-
-                if current_test.endswith('(ЦДО).txt') or current_test.endswith('ЦДО.txt'):
-                    i += 1
-                    continue
-
-                test1 = open(current_test, 'r')
-
-                list_correct_answer = ()  # Tuple of correct answers
-
-#                for line in test1:
-#                    if line.startswith('%*Верный'):  # If the string contains the number of the correct answer
-#                        correct_answer = line[16:-4].strip()
-#                        list_correct_answer.append(correct_answer)
-
-                list_correct_answer += tuple(line[16:-4].strip() for line in test1 if line.startswith('%*Верный'))
-
-                test1.close()
-
-                if self.radio1.isChecked():
-                    ddd = current_test.rfind('\\') + 1
-                    f2 = current_test[0:ddd] + 'ЦДО.txt'
-                elif self.radio2.isChecked():
-                    f2 = current_test.replace('.txt', ' (ЦДО).txt')
-
-                file2 = f2
-
-                test1 = open(current_test, 'r')
-
-#                test2 = open(file2, 'a')
-                with open(file2, 'a') as test2:
-
-                    x = 0
-                    for line in test1:
-
-                        if line.startswith('%*--'):  # If the string contains the question number
-                            test2.write('\n' + '#L' + str(n) + ' W4' + '\n')
-                            correct = list_correct_answer[x]  # Number of correct answers to the current question
-                            b = 0  # Reset the number of options
-                            n += 1  # Number next question
-                            x += 1  # Element number tuple - correct answer to the following question
-
-                        start = line[0]
-                        if start.isalpha() or start.isdigit():  # If the string contains a question
-                            question = line[0:-3].strip()
-                            test2.write(question + '\n')
-
-                        if line.startswith('%*Ответ'):  # If the string contains answer
-                            b += 1  # Increases the number of options
-                            answer = line[11:-3].strip()
-                            right_answer = '$!' + answer + '\n'
-                            wrong_answer = '$?' + answer + '\n'
-                            test2.write(right_answer) if b == int(correct) else test2.write(wrong_answer)
-#                test2.close()
-                test1.close()
-
-                i += 1
-
-            success_id = 0
-            self.label3.setText('<font color = green>Конвертирование успешно завершено!<\\font>')
-
         except ValueError:
             error_id = 1
             self.label3.setText('<font color = red>Невозможно начать конвертирование<\\font>')
+
+            if error_id is not None:  # If an error occurs, a message box opens
+                self.error_window()
+                return
+
+        try:
+            if len(list_tests) > 0:
+                i = 0
+                for element in list_tests:
+
+                    if self.flag.isChecked():  # Если установлен флаг то сплошная нумерация с заданного числа
+                        None
+                    else:  # Иначе каждый тест с 1
+                        n = 1
+
+                    current_test = list_tests[i]
+
+                    if current_test.endswith('(ЦДО).txt') or current_test.endswith('ЦДО.txt'):
+                        i += 1
+                        continue
+
+                    test1 = open(current_test, 'r')
+
+                    list_correct_answer = ()  # Tuple of correct answers
+
+#                        for line in test1:
+#                            if line.startswith('%*Верный'):  # If the string contains the number of the correct answer
+#                                correct_answer = line[16:-4].strip()
+#                                list_correct_answer.append(correct_answer)
+
+                    list_correct_answer += tuple(line[16:-4].strip() for line in test1 if line.startswith('%*Верный'))
+
+                    test1.close()
+
+                    if self.radio1.isChecked():
+                        ddd = current_test.rfind('\\') + 1
+                        f2 = current_test[0:ddd] + 'ЦДО.txt'
+                    elif self.radio2.isChecked():
+                        f2 = current_test.replace('.txt', ' (ЦДО).txt')
+
+                    file2 = f2
+
+                    test1 = open(current_test, 'r')
+
+#                        test2 = open(file2, 'a')
+                    with open(file2, 'a') as test2:
+
+                        x = 0
+                        for line in test1:
+
+                            if line.startswith('%*--'):  # If the string contains the question number
+                                test2.write('\n' + '#L' + str(n) + ' W4' + '\n')
+                                correct = list_correct_answer[x]  # Number of correct answers to the current question
+                                b = 0  # Reset the number of options
+                                n += 1  # Number next question
+                                x += 1  # Element number tuple - correct answer to the following question
+
+                            start = line[0]
+                            if start.isalpha() or start.isdigit():  # If the string contains a question
+                                question = line[0:-3].strip()
+                                test2.write(question + '\n')
+
+                            if line.startswith('%*Ответ'):  # If the string contains answer
+                                b += 1  # Increases the number of options
+                                answer = line[11:-3].strip()
+                                right_answer = '$!' + answer + '\n'
+                                wrong_answer = '$?' + answer + '\n'
+                                test2.write(right_answer) if b == int(correct) else test2.write(wrong_answer)
+#                        test2.close()
+                    test1.close()
+
+                    i += 1
+
+                success_id = 0
+                self.label3.setText('<font color = green>Конвертирование успешно завершено!<\\font>')
+
+            else:
+                error_id = 0
+
         except NameError:
             error_id = 0
             self.label3.setText('<font color = red>Невозможно начать конвертирование<\\font>')
