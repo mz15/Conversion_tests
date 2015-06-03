@@ -7,11 +7,11 @@ class Window(QtGui.QMainWindow):
 
         self.setWindowIcon(QtGui.QIcon('icon.png'))
         self.setWindowTitle(self.trUtf8('Конвертирование тестов в формат ЦДО'))
-        self.resize(520, 245)
-        self.center()  # Function places the window in the center of the screen.
+        self.resize(650, 245)
+        self.center()  # Function places the window in the center of the screen
         self.statusBar()
-        self.setMinimumSize(520, 245)
-        self.setMaximumSize(520, 245)
+        self.setMinimumSize(650, 245)
+        self.setMaximumSize(650, 245)
 #        self.setGeometry(100, 100, 1000, 205)
 #        self.statusBar().showMessage('Pleshkov Andrey')
 
@@ -61,11 +61,11 @@ class Window(QtGui.QMainWindow):
         self.frame1 = QtGui.QFrame(self)
         self.frame1.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame1.setFrameShadow(QtGui.QFrame.Raised)
-        self.frame1.setGeometry(180, 15, 180, 100)
+        self.frame1.setGeometry(180, 15, 165, 100)
         self.gridlay1 = QtGui.QGridLayout(self.frame1)
 
-        self.group1 = QtGui.QGroupBox('Конвертировать тесты:', self.frame1)  # Frame with an inscription around.
-        self.lay1 = QtGui.QVBoxLayout(self.group1)  # Manager placement of elements in the frame.
+        self.group1 = QtGui.QGroupBox('Конвертировать тесты:', self.frame1)  # Frame with an inscription
+        self.lay1 = QtGui.QVBoxLayout(self.group1)  # Manager placement of elements in the frame
 
         # Two dependent RadioButton:
         self.radio1 = QtGui.QRadioButton('В один файл', self.group1)
@@ -85,7 +85,7 @@ class Window(QtGui.QMainWindow):
         self.frame2 = QtGui.QFrame(self)
         self.frame2.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame2.setFrameShadow(QtGui.QFrame.Raised)
-        self.frame2.setGeometry(350, 15, 170, 100)
+        self.frame2.setGeometry(335, 15, 165, 100)
         self.gridlay2 = QtGui.QGridLayout(self.frame2)
 
         self.group2 = QtGui.QGroupBox('Номер первого вопроса:', self.frame2)
@@ -99,7 +99,7 @@ class Window(QtGui.QMainWindow):
 
         self.ln_edit = QtGui.QLineEdit('', self.group2)
         self.ln_edit.setReadOnly(True)  # Read-only
-        self.ln_edit.setFrame(False)  # Without frame
+        self.ln_edit.setFrame(False)  # Frame
         self.ln_edit.setText('1 (для всех тестов)')
 
 #        self.ln_edit.editingFinished.connect(self.input_number)
@@ -108,74 +108,150 @@ class Window(QtGui.QMainWindow):
         self.lay2.addWidget(self.ln_edit)
         self.gridlay2.addWidget(self.group2, 0, 0, 0, 0)
 
-        """ Third frame """
+        """ Third frame ----------------------------------------------------- """
 
         self.frame3 = QtGui.QFrame(self)
         self.frame3.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame3.setFrameShadow(QtGui.QFrame.Raised)
-        self.frame3.setGeometry(0, 100, 520, 70)
+        self.frame3.setGeometry(490, 15, 160, 100)
         self.gridlay3 = QtGui.QGridLayout(self.frame3)
 
-        self.group3 = QtGui.QGroupBox('Папка с тестами:', self.frame3)
+        self.group3 = QtGui.QGroupBox('Имя выходного файла:', self.frame3)
         self.lay3 = QtGui.QVBoxLayout(self.group3)
 
-        self.label1 = QtGui.QLabel(self.group3)
-        self.label1.setText('<font color = grey>Файлы не выбраны<\\font>')
+        self.flag2 = QtGui.QCheckBox('Изменить', self.group3)
+        self.flag2.setCheckState(QtCore.Qt.Unchecked)
+        self.lay3.addWidget(self.flag2)
+        self.flag2.stateChanged.connect(self.state_changed2)
 
-        self.lay3.addWidget(self.label1)
+        self.ln_edit2 = QtGui.QLineEdit('', self.group3)
+        self.ln_edit2.setReadOnly(True)  # Read-only
+        self.ln_edit2.setFrame(False)  # Frame
+        self.ln_edit2.setText('test (ЦДО)')
+
+        self.lay3.addWidget(self.ln_edit2)
         self.gridlay3.addWidget(self.group3, 0, 0, 0, 0)
 
         """ Fourth frame """
 
-        self.frame4 = QtGui.QFrame(self)  # Фрейм
+        self.frame4 = QtGui.QFrame(self)
         self.frame4.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame4.setFrameShadow(QtGui.QFrame.Raised)
-        self.frame4.setGeometry(0, 155, 145, 75)
+        self.frame4.setGeometry(0, 100, 650, 70)
         self.gridlay4 = QtGui.QGridLayout(self.frame4)
 
-        self.group4 = QtGui.QGroupBox('Количество файлов:', self.frame4)
+        self.group4 = QtGui.QGroupBox('Папка с тестами:', self.frame4)
         self.lay4 = QtGui.QVBoxLayout(self.group4)
 
-        self.label2 = QtGui.QLabel(self.group4)
-        self.label2.setText('<font color = grey>Файлы не выбраны<\\font>')
+        self.label1 = QtGui.QLabel(self.group4)
+        self.label1.setText('<font color = grey>Файлы не выбраны<\\font>')
 
-        self.lay4.addWidget(self.label2)
+        self.lay4.addWidget(self.label1)
         self.gridlay4.addWidget(self.group4, 0, 0, 0, 0)
 
         """ Fifth frame """
 
-        self.frame5 = QtGui.QFrame(self)  # Фрейм
+        self.frame5 = QtGui.QFrame(self)
         self.frame5.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame5.setFrameShadow(QtGui.QFrame.Raised)
-        self.frame5.setGeometry(135, 155, 385, 75)
+        self.frame5.setGeometry(0, 155, 145, 75)
         self.gridlay5 = QtGui.QGridLayout(self.frame5)
 
-        self.group5 = QtGui.QGroupBox('Результат конвертирования:', self.frame5)
+        self.group5 = QtGui.QGroupBox('Количество файлов:', self.frame5)
         self.lay5 = QtGui.QVBoxLayout(self.group5)
 
-        self.label3 = QtGui.QLabel(self.group5)
+        self.label2 = QtGui.QLabel(self.group5)
+        self.label2.setText('<font color = grey>Файлы не выбраны<\\font>')
+
+        self.lay5.addWidget(self.label2)
+        self.gridlay5.addWidget(self.group5, 0, 0, 0, 0)
+
+        """ Sixth frame """
+
+        self.frame6 = QtGui.QFrame(self)
+        self.frame6.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame6.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame6.setGeometry(135, 155, 275, 75)
+        self.gridlay6 = QtGui.QGridLayout(self.frame6)
+
+        self.group6 = QtGui.QGroupBox('Результат конвертирования:', self.frame6)
+        self.lay6 = QtGui.QVBoxLayout(self.group6)
+
+        self.label3 = QtGui.QLabel(self.group6)
         self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
 
-        self.lay5.addWidget(self.label3)
-        self.gridlay5.addWidget(self.group5, 0, 0, 0, 0)
+        self.lay6.addWidget(self.label3)
+        self.gridlay6.addWidget(self.group6, 0, 0, 0, 0)
+
+        """ Seventh frame """
+
+        self.frame7 = QtGui.QFrame(self)
+        self.frame7.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.frame7.setFrameShadow(QtGui.QFrame.Raised)
+        self.frame7.setGeometry(400, 155, 250, 75)
+        self.gridlay7 = QtGui.QGridLayout(self.frame7)
+
+        self.group7 = QtGui.QGroupBox('Автор программы:', self.frame7)
+        self.lay7 = QtGui.QVBoxLayout(self.group7)
+
+        self.label4 = QtGui.QLabel(self.group7)
+        self.label4.setText('<font color = grey>Андрей Плешков © 2015<\\font>')
+
+        self.lay7.addWidget(self.label4)
+        self.gridlay7.addWidget(self.group7, 0, 0, 0, 0)
 
     def state_changed(self):
         global number
 
         if self.flag.isChecked():  # If the flag is set
             self.ln_edit.setReadOnly(False)  # Read-only
-            self.ln_edit.setFrame(True)  # With frame
+            self.ln_edit.setFrame(True)  # Frame
             self.ln_edit.setValidator(QtGui.QIntValidator(0, 999999999))  # Limit input
             self.ln_edit.setPlaceholderText('Например: 1')  # Help
             self.ln_edit.textChanged.connect(self.input_number)
             self.ln_edit.clear()
-            self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
         else:
             self.ln_edit.setReadOnly(True)  # Read-only
-            self.ln_edit.setFrame(False)  # Without frame
+            self.ln_edit.setFrame(False)  # Frame
             self.ln_edit.setText('1 (для всех тестов)')
-            self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
             number = 1
+
+        self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
+
+    def state_changed2(self):
+        global error_id
+        error_id = None
+
+        if self.radio1.isChecked():
+
+            if self.flag2.isChecked():  # If the flag is set
+                self.ln_edit2.setReadOnly(False)  # Read-only
+                self.ln_edit2.setFrame(True)  # Frame
+                self.ln_edit2.setPlaceholderText('Например: ЦДО')  # Help
+                self.ln_edit2.textChanged.connect(self.input_name)
+                self.ln_edit2.clear()
+#                self.ln_edit2.setInputMask('Имя: NNNNNNNNNNN.t\\xt')
+
+            else:
+                self.ln_edit2.setReadOnly(True)  # Read-only
+                self.ln_edit2.setFrame(False)  # Frame
+                self.ln_edit2.setText('ЦДО')
+
+        elif self.radio2.isChecked():
+
+            if self.flag2.isChecked():  # If the flag is set
+                self.flag2.setCheckState(QtCore.Qt.Unchecked)
+                error_id = 3
+
+            else:
+                self.ln_edit2.setReadOnly(True)  # Read-only
+                self.ln_edit2.setFrame(False)  # Frame
+                self.ln_edit2.setText('test (ЦДО)')
+
+        if error_id is not None:  # If an error occurs, a message box opens
+                self.error_window()
+
+        self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
 
     def center(self):
 
@@ -192,9 +268,31 @@ class Window(QtGui.QMainWindow):
         global number
         number = self.ln_edit.text()
 
+    def input_name(self):
+
+        """ The function starts when changing the text in LineEdit. LineEdit value assigned to the variable name. """
+
+        global name
+        name = self.ln_edit2.text()
+
+        if name.endswith('.txt'):  # If the user specifies a file extension, it will be deleted
+            name = name[0:-4]
+
     def selection_radio_button(self):
 
-        """ Function is starts when the user toggles the RadioButton. It clears the result of conversion. """
+        """ Function is starts when the user toggles the RadioButton. It restores defaults. """
+
+        self.flag2.setCheckState(QtCore.Qt.Unchecked)
+
+        if self.radio1.isChecked():
+            self.ln_edit2.setReadOnly(True)  # Read-only
+            self.ln_edit2.setFrame(False)  # Frame
+            self.ln_edit2.setText('ЦДО')
+
+        elif self.radio2.isChecked():
+            self.ln_edit2.setReadOnly(True)  # Read-only
+            self.ln_edit2.setFrame(False)  # Frame
+            self.ln_edit2.setText('test (ЦДО)')
 
         self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
 
@@ -222,8 +320,8 @@ class Window(QtGui.QMainWindow):
             self.label2.setText('<font color = grey>' + str(len(list_tests)) + '<\\font>')
             self.label3.setText('<font color = grey>Конвертирование не запущено<\\font>')
 
-            if len(str(folder)) > 80:
-                label1_text = str(folder)[0:80] + '... '
+            if len(str(folder)) > 106:
+                label1_text = str(folder)[0:104] + '... '
                 self.label1.setText('<font color = grey>' + label1_text + '<\\font>')
             else:
                 self.label1.setText('<font color = grey>' + str(folder) + '<\\font>')
@@ -308,9 +406,16 @@ class Window(QtGui.QMainWindow):
 
                     test1.close()
 
+                    """ The full path to the output file: """
+
                     if self.radio1.isChecked():
                         ddd = current_test.rfind('\\') + 1
-                        f2 = current_test[0:ddd] + 'ЦДО.txt'
+
+                        if self.flag2.isChecked():  # If the flag is set
+                            f2 = current_test[0:ddd] + name + '.txt'
+                        else:
+                            f2 = current_test[0:ddd] + 'ЦДО.txt'
+
                     elif self.radio2.isChecked():
                         f2 = current_test.replace('.txt', ' (ЦДО).txt')
 
@@ -390,7 +495,7 @@ class SuccessMessage(QtGui.QMessageBox):
         self.addButton('ОК', QtGui.QMessageBox.AcceptRole)
 
         if success_id == 0:
-            self.setText(u"Конвертирование успешно завершено! ")
+            self.setText('Конвертирование успешно завершено!')
 
 class ErrorMessage(QtGui.QMessageBox):
     def __init__(self, error_id):
@@ -406,6 +511,8 @@ class ErrorMessage(QtGui.QMessageBox):
             self.setText('Сначала введите номер первого вопроса.')
         elif error_id == 2:
             self.setText('Исходный файл с тестом должен быть в кодировке ANSI.')
+        elif error_id == 3:
+            self.setText('При выборе конвертирования в отдельные файлы нельзя изменить имя файлов.')
 
 app = QtGui.QApplication(sys.argv)
 qb = Window()
