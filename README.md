@@ -1,5 +1,6 @@
 # Conversion_tests
-Conversion tests to format of the distance learning centre (Конветирование тестов в формат ЦДО)
+Conversion tests to format of the distance learning centre (Конветирование тестов в формат ЦДО)<br/>
+([Посмотреть старую версию] (https://github.com/mz15/Conversion_tests/blob/master/conversion_tests.pyw))
 
 **Описание программы:**<br/>
 Программа конвертирует вопросы тестов из одного формата (см. 1 ст. таблицы) в другой – ЦДО (см. 2 ст.):
