@@ -116,6 +116,9 @@ class Window(QtGui.QMainWindow):
 
         """ Third frame """
 
+        global name
+        name = 'для проверки на длину'
+
         self.frame3 = QtGui.QFrame(self)
         self.frame3.setFrameShape(QtGui.QFrame.StyledPanel)
         self.frame3.setFrameShadow(QtGui.QFrame.Raised)
@@ -498,9 +501,9 @@ class Window(QtGui.QMainWindow):
             elif len(list_tests) == 0 and len(name) == 0:
                 error_id = 5
 
-        except NameError:
-            error_id = 0
-            self.label3.setText('<font color = red>Невозможно начать конвертирование<\\font>')
+        #except NameError:
+        #    error_id = 0
+         #   self.label3.setText('<font color = red>Невозможно начать конвертирование<\\font>')
         except UnicodeDecodeError:
             error_id = 2
             self.label3.setText('<font color = red>Невозможно начать конвертирование<\\font>')
