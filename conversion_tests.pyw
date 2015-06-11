@@ -4,7 +4,7 @@ import sys
 from PyQt4 import QtGui, QtCore
 
 class Window(QtGui.QMainWindow):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, se=None):
         QtGui.QMainWindow.__init__(self, parent)
 
         self.setWindowIcon(QtGui.QIcon('icon.png'))
